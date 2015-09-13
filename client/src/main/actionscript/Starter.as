@@ -21,16 +21,16 @@ public class Starter extends Sprite {
         gameLogic = new GameLogic();
         player = newMover();
 
+        playerInputController = new PlayerInputController(player);
         gameLogic.registerMover(player);
+
+        var bot:Mover = newMover();
+        bot.direction.x = 1;
+        gameLogic.registerMover(bot);
 
         this.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
         this.addEventListener(Event.ADDED_TO_STAGE, function (e:Event):void {
-            playerInputController = new PlayerInputController(player);
             stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
-            
-            var bot:Mover = newMover();
-            bot.direction.x = 1;
-            gameLogic.registerMover(bot);
         });
         this.addChild(gameRender);
     }

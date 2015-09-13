@@ -1,0 +1,51 @@
+package com.chaoslabgames.packet;
+
+option java_package = "com.chaoslabgames.packet";
+option java_outer_classname = "Packet";
+option java_multiple_files = true;
+
+message PacketMSG
+{
+  // base
+  optional bool		ping	= 1;
+
+  // data
+  optional int32	type   	= 2;
+  optional bytes	data    = 3;
+}
+
+message LoginPkg
+{
+    required string name = 1;
+}
+
+message PointPkg
+{
+    required float x = 1;
+    required float y = 2;
+}
+
+message MoverDataPkg
+{
+    required PointPkg position = 1;
+    required PointPkg direction = 2;
+    required int32 color = 3;
+}
+
+message UpdateDirectionCmdPkg
+{
+    required PointPkg direction = 1;
+}
+
+message JoinEventPkg
+{
+    required int64 id = 1;
+    required string name = 2;
+    required MoverDataPkg data = 3;
+}
+
+message UpdateMoverEventPkg
+{
+    required int64 id = 1;
+    required MoverDataPkg moverData = 2;
+}
