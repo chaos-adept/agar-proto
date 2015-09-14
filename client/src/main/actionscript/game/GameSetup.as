@@ -2,37 +2,35 @@
  * Created by Julia on 13.09.2015.
  */
 package game {
-import com.awar.ags.api.base.Event;
-
 import event.InitGameEvent;
 import event.MoverEvent;
 
 import flash.display.Sprite;
-
-import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.geom.Point;
+
+import game.logic.BaseGameLogic;
 
 public class GameSetup extends EventDispatcher {
 
-    private var gameLogic:LocalGameLogic;
+    private var gameLogic:BaseGameLogic;
     private var gameRender:GameRender;
     public var playerInputController:PlayerInputController;
     public var player:Mover;
     public var playerName:String;
-
     public var container:Sprite;
+    public var gameLogicFactory:Function;
 
-    public function GameSetup(container:Sprite, playerName:String) {
+    public function GameSetup(container:Sprite, playerName:String, gameLogicFactory:Function) {
         this.container = container;
         this.playerName = playerName;
+        this.gameLogicFactory = gameLogicFactory;
     }
 
     public function setupGame():void {
         gameRender = new GameRender();
         container.addChild(gameRender);
 
-        gameLogic = new LocalGameLogic();
+        gameLogic = gameLogicFactory();
         gameLogic.addEventListener(MoverEvent.EVENT_NEW_MOVER, function (e:MoverEvent):void {
             gameRender.bindView(e.mover);
         });
@@ -40,8 +38,6 @@ public class GameSetup extends EventDispatcher {
         gameLogic.addEventListener(MoverEvent.PLAYER_LOGGED, function (e:MoverEvent):void {
             player = e.mover;
             playerInputController = new PlayerInputController(player);
-            gameLogic.registerMover(player);
-
             dispatchEvent(new InitGameEvent())
         });
 

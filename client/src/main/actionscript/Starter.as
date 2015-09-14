@@ -10,7 +10,7 @@ import flash.geom.Point;
 import flash.geom.Vector3D;
 import flash.utils.Timer;
 
-import game.LocalGameLogic;
+import game.logic.LocalGameLogic;
 
 import game.GameRender;
 import game.GameSetup;
@@ -21,7 +21,9 @@ public class Starter extends Sprite {
     public var gameSetup:GameSetup;
 
     public function Starter() {
-        gameSetup = new GameSetup(this, "user " + Math.random());
+        gameSetup = new GameSetup(this, "user " + Math.random(), function ():LocalGameLogic {
+            return new LocalGameLogic();
+        });
         this.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
         this.addEventListener(Event.ADDED_TO_STAGE, function (e:Event):void {
             gameSetup.addEventListener(InitGameEvent.EVENT_INITALIZATION_COMPLETED, function (e:Event):void {
