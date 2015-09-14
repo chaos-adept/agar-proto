@@ -10,19 +10,26 @@ import flash.geom.Point;
 import flash.geom.Vector3D;
 import flash.utils.Timer;
 
+import game.logic.BaseGameLogic;
+
 import game.logic.LocalGameLogic;
 
 import game.GameRender;
 import game.GameSetup;
+import game.logic.RemoteGameLogic;
 
 
 public class Starter extends Sprite {
 
     public var gameSetup:GameSetup;
 
+    public var isRemote:Boolean = false;
+    public var server:String;
+    public var port:int;
+
     public function Starter() {
-        gameSetup = new GameSetup(this, "user " + Math.random(), function ():LocalGameLogic {
-            return new LocalGameLogic();
+        gameSetup = new GameSetup(this, "user " + Math.random(), function ():BaseGameLogic {
+            return isRemote ? new RemoteGameLogic(server, port) : new LocalGameLogic();
         });
         this.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
         this.addEventListener(Event.ADDED_TO_STAGE, function (e:Event):void {
