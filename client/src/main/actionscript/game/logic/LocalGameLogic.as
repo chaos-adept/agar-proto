@@ -50,7 +50,6 @@ public class LocalGameLogic extends BaseGameLogic {
 
         dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
 
-
         return mover;
     }
 }
