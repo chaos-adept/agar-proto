@@ -1,5 +1,7 @@
 package {
 
+import event.InitGameEvent;
+
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -8,53 +10,37 @@ import flash.geom.Point;
 import flash.geom.Vector3D;
 import flash.utils.Timer;
 
+import game.LocalGameLogic;
+
+import game.GameRender;
+import game.GameSetup;
+
 
 public class Starter extends Sprite {
 
-    private var gameLogic:GameLogic;
-    private var gameRender:GameRender;
-    private var player:Mover;
-    private var playerInputController:PlayerInputController;
+    public var gameSetup:GameSetup;
 
     public function Starter() {
-        gameRender = new GameRender();
-        gameLogic = new GameLogic();
-        player = newMover();
-
-        playerInputController = new PlayerInputController(player);
-        gameLogic.registerMover(player);
-
-        var bot:Mover = newMover();
-        bot.direction.x = 1;
-        gameLogic.registerMover(bot);
-
+        gameSetup = new GameSetup(this, "user " + Math.random());
         this.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
         this.addEventListener(Event.ADDED_TO_STAGE, function (e:Event):void {
-            stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
+            gameSetup.addEventListener(InitGameEvent.EVENT_INITALIZATION_COMPLETED, function (e:Event):void {
+                stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMoveHandler);
+            });
+            gameSetup.setupGame();
         });
-        this.addChild(gameRender);
-    }
 
-    private function newMover():Mover {
-        var mover:Mover = new Mover();
-        mover.direction = new Point(0, 0);
-        mover.position = new Point(0, 0);
-
-        gameRender.bindView(mover);
-
-        this.addChild(mover.view);
-
-        return mover;
     }
 
     private function onEnterFrameHandler(event:Event):void {
-
     }
 
     private function onMouseMoveHandler(event:MouseEvent):void {
+        //todo move to GameSetup?
+        var player:Mover = gameSetup.player;
         var direction:Point = new Point(stage.mouseX - player.position.x, stage.mouseY - player.position.y);
         var norm:Point = new Point(direction.x / direction.length, direction.y / direction.length);
-        playerInputController.updateDirection(norm);
+        gameSetup.playerInputController.updateDirection(norm);
     }
 
 }
