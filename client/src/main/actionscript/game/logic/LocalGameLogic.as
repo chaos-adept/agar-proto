@@ -23,7 +23,8 @@ public class LocalGameLogic extends BaseGameLogic {
     }
 
     public function registerMover(mover:Mover):void {
-        movers.push(mover)
+        movers.push(mover);
+        dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
     }
 
     public function onTickHandler(e:TimerEvent):void {
@@ -47,8 +48,6 @@ public class LocalGameLogic extends BaseGameLogic {
         mover.direction = new Point(0, 0);
         mover.position = new Point(0, 0);
         registerMover(mover);
-
-        dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
 
         return mover;
     }
