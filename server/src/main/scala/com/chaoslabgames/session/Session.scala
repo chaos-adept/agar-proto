@@ -39,6 +39,13 @@ class Session(val id: Long, val connection: ActorRef, val gameModel: ActorRef) e
       )
   }
 
+
+  @throws[Exception](classOf[Exception])
+  override def postStop(): Unit = {
+    gameModel ! GameModelService.SessionStopCmd(id, self)
+    super.postStop()
+  }
+
   override def receive = {
     case Session.CmdMsg(code, args:Array[Byte]) =>
       code match {

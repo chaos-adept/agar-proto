@@ -5,7 +5,12 @@ package game.logic {
 import flash.events.EventDispatcher;
 
 public class BaseGameLogic extends EventDispatcher {
-    public function start(playerName:String):void {}
+
+    public var playerName:String;
+
+    public function start(playerName:String):void {
+        this.playerName = playerName
+    }
 }
 
 }

@@ -1,7 +1,10 @@
 package com.chaoslabgames.tcpfront
 
+import java.nio.ByteBuffer
+
 import akka.actor._
 import akka.io.Tcp
+import akka.io.Tcp.Write
 import akka.io.TcpPipelineHandler.{Init, WithinActorContext}
 import akka.util.ByteString
 import com.chaoslabgames.msg.Msg
@@ -91,6 +94,7 @@ class TcpConnection(
   }
 
   def sendData(cmd: Int, data: Array[Byte]) {
+
 //    val trp: PacketMSG.Builder = PacketMSG.newBuilder()
 //    trp.setType(cmd.code)
 //    trp.setData(com.google.protobuf.ByteString.copyFrom(data))
@@ -103,8 +107,20 @@ class TcpConnection(
 //    val msg: ByteString = ByteString(bb.array())
 //
 //    tcpAdapter ! Write(msg)
+    log.info("Cmd send: {}", cmd);
 
-    log.info("Cmd send: {}", cmd)
+    val trp: PacketMSG.Builder = PacketMSG.newBuilder()
+    trp.setType(cmd)
+    trp.setData(com.google.protobuf.ByteString.copyFrom(data))
+
+    val packet = trp.build().toByteArray
+    val bb: ByteBuffer = ByteBuffer.allocate(4 + packet.length)
+    bb.putInt(packet.length)
+    bb.put(packet)
+
+    val msg: ByteString = ByteString(bb.array())
+
+    tcpAdapter ! Write(msg)
   }
 
   def sendHeartbeat(): Unit = {
