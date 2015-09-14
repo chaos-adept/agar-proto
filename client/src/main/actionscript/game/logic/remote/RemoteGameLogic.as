@@ -85,21 +85,6 @@ public class RemoteGameLogic extends BaseGameLogic {
         sendPacket(CMD_login, pkg);
     }
 
-    private function onDataReceived(e:Packet):void {
-        switch (e.Cmd) {
-            case EVENT_JOIN:
-                var joinPkg:JoinEventPkg = new JoinEventPkg();
-                joinPkg.mergeFrom(e.Data);
-                onJoin(joinPkg);
-                break;
-            case EVENT_update_mover:
-                var updMoverPkg:UpdateMoverEventPkg = new UpdateMoverEventPkg();
-                updMoverPkg.mergeFrom(e.Data);
-                onUpdateMover(updMoverPkg);
-                break;
-        }
-    }
-
     private function onUpdateMover(updMoverPkg:UpdateMoverEventPkg):void {
         var id:Number = updMoverPkg.id.toNumber();
         var mover:Mover = (moverDict[id]);
@@ -116,10 +101,6 @@ public class RemoteGameLogic extends BaseGameLogic {
             addMover(id, mover);
         }
 
-    }
-
-    private function pkgToPoint(pkg:PointPkg):Point {
-        return new Point(pkg.x, pkg.y);
     }
 
     private function onJoin(joinPkg:JoinEventPkg):void {
@@ -154,6 +135,25 @@ public class RemoteGameLogic extends BaseGameLogic {
             args.writeTo(packet.Data);
         }
         ags.send(packet)
+    }
+
+    private function pkgToPoint(pkg:PointPkg):Point {
+        return new Point(pkg.x, pkg.y);
+    }
+
+    private function onDataReceived(e:Packet):void {
+        switch (e.Cmd) {
+            case EVENT_JOIN:
+                var joinPkg:JoinEventPkg = new JoinEventPkg();
+                joinPkg.mergeFrom(e.Data);
+                onJoin(joinPkg);
+                break;
+            case EVENT_update_mover:
+                var updMoverPkg:UpdateMoverEventPkg = new UpdateMoverEventPkg();
+                updMoverPkg.mergeFrom(e.Data);
+                onUpdateMover(updMoverPkg);
+                break;
+        }
     }
 }
 }
