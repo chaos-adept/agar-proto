@@ -32,7 +32,7 @@ public class RemoteGameLogic extends BaseGameLogic {
 
     private var host:String;
     private var port:int;
-    private var ags: AgsEngine;
+    private var ags:AgsEngine;
     public static const log:ILogger = Logging.getLogger(RemoteGameLogic);
 
     var CMD_Ping:uint = 1;
@@ -48,10 +48,10 @@ public class RemoteGameLogic extends BaseGameLogic {
         this.port = port;
         ags = new AgsEngine();
 
-        var server: Server = new Server( "server1" );
-        var availConn: AvailableConnection = new AvailableConnection( host, port, TransportType.TCP );
-        server.addAvailableConnection( availConn );
-        ags.addServer( server );
+        var server:Server = new Server("server1");
+        var availConn:AvailableConnection = new AvailableConnection(host, port, TransportType.TCP);
+        server.addAvailableConnection(availConn);
+        ags.addServer(server);
 
     }
 
@@ -61,24 +61,14 @@ public class RemoteGameLogic extends BaseGameLogic {
 
         moverDict = new Dictionary();
 
-        ags.addEventListener( MessageType.ConnectionAttemptResponse.name, onConnectionResponse );
-        ags.addEventListener( MessageType.ConnectionResponse.name, onConnectionResponse );
-        ags.addEventListener( MessageType.Packet.name, onDataReceived );
+        ags.addEventListener(MessageType.ConnectionAttemptResponse.name, onConnectionResponse);
+        ags.addEventListener(MessageType.ConnectionResponse.name, onConnectionResponse);
+        ags.addEventListener(MessageType.Packet.name, onDataReceived);
         ags.connect();
-//        var mover:Mover = new Mover();
-//        mover.direction = new Point();
-//        mover.position = new Point();
-//
-//        dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
-//        dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, mover));
-
-
     }
 
-    private function onConnectionResponse( e: ConnectionResponse ): void
-    {
-        if( e.successful )
-        {
+    private function onConnectionResponse(e:ConnectionResponse):void {
+        if (e.successful) {
             onConnected();
         } else {
             log.error("connection failed")
@@ -95,18 +85,17 @@ public class RemoteGameLogic extends BaseGameLogic {
         sendPacket(CMD_login, pkg);
     }
 
-    private function onDataReceived( e: Packet ): void
-    {
+    private function onDataReceived(e:Packet):void {
         switch (e.Cmd) {
             case EVENT_JOIN:
-                    var joinPkg:JoinEventPkg = new JoinEventPkg();
-                    joinPkg.mergeFrom(e.Data);
-                    onJoin(joinPkg);
+                var joinPkg:JoinEventPkg = new JoinEventPkg();
+                joinPkg.mergeFrom(e.Data);
+                onJoin(joinPkg);
                 break;
             case EVENT_update_mover:
-                    var updMoverPkg:UpdateMoverEventPkg = new UpdateMoverEventPkg();
-                    updMoverPkg.mergeFrom(e.Data);
-                    onUpdateMover(updMoverPkg);
+                var updMoverPkg:UpdateMoverEventPkg = new UpdateMoverEventPkg();
+                updMoverPkg.mergeFrom(e.Data);
+                onUpdateMover(updMoverPkg);
                 break;
         }
     }
@@ -159,7 +148,7 @@ public class RemoteGameLogic extends BaseGameLogic {
     }
 
     private function sendPacket(cmd:int, args:Message):void {
-        var packet: Packet = new Packet();
+        var packet:Packet = new Packet();
         packet.Cmd = cmd;
         if (args) {
             args.writeTo(packet.Data);
