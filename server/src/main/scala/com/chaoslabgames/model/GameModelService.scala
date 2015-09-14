@@ -17,13 +17,14 @@ object GameModelService {
 
   case class LoginCmd(id: Long, session: ActorRef, name: String)
   case class SessionStopCmd(id: Long, session: ActorRef)
-
   case class UpdateDirectionCmd(id: Long, session: ActorRef, newDir: Point)
-
   case object WorldTick
 
   class Mover(var session: ActorRef, val name: String, var worldData: MoverWorldData) {
-    def isOffline():Boolean = { session == null }
+    def isOffline(): Boolean = {
+      session == null
+    }
+
     def markAsOffline() = {
       session = null
       worldData.direction = new Point(0, 0)
@@ -79,15 +80,11 @@ class GameModelService extends Actor with ActorLogging {
         }
       }
     }
-
-
   }
 
   def markSessionAsStopped(id: Long): Unit = {
     val mover = sessions.get(id).get
     mover.markAsOffline()
-
-
   }
 
   override def receive = {
