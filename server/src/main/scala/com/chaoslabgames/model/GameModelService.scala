@@ -63,7 +63,7 @@ class GameModelService extends Actor with ActorLogging {
   def updateWorld() = {
     sessions.foreach { case (id, mover) =>
       val direction = mover.worldData.direction
-      val dirNormVec = new Vector2f(direction.x, direction.y)
+      val dirNormVec = new Vector2f(direction.x, direction.y).normalise()
       val position = mover.worldData.position
       val posVec = new Vector2f(position.x, position.y)
       val newPosVec = posVec.add(dirNormVec.scale(speedKoef))

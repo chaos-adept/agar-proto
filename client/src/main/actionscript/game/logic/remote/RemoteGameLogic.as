@@ -52,8 +52,7 @@ public class RemoteGameLogic extends BaseGameLogic {
         var availConn:AvailableConnection = new AvailableConnection(host, port, TransportType.TCP);
         server.addAvailableConnection(availConn);
         ags.addServer(server);
-
-    }
+   }
 
 
     override public function start(playerName:String):void {
