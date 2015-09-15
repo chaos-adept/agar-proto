@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 buildscript {
     repositories {
         mavenCentral()
@@ -11,9 +13,27 @@ apply plugin: 'gradlefx'
 apply plugin: 'ideafx'
 
 type = 'swf'
-
+frameworkLinkage = 'none'
 mainClass = 'Starter'
+
+repositories {
+    ivy {
+        name 'Apache Flex'
+        // pattern for url http://archive.apache.org/dist/flex/4.9.0/binaries/apache-flex-sdk-4.9.0-bin.zip
+        artifactPattern 'http://archive.apache.org/dist/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
+    }
+    ivy {
+        name 'Adobe Air SDK'
+        artifactPattern 'http://download.macromedia.com/air/win/download/[revision]/[module].[ext]'
+    }
+}
 
 dependencies {
     merged fileTree(dir: 'libs', include: '*.swc')
+    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.9.0', ext: Os.isFamily(Os.FAMILY_WINDOWS) ? 'zip' : 'tar.gz'
+    airSDK  group: 'com.adobe', name: 'AdobeAIRSDK', version: '3.4', ext: Os.isFamily(Os.FAMILY_WINDOWS) ? 'zip' : 'tbz2'
+}
+
+sdkAutoInstall {
+    showPrompts = false
 }

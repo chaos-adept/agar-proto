@@ -9,27 +9,20 @@ import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.events.TimerEvent;
 import flash.geom.Point;
-import flash.geom.Vector3D;
-import flash.utils.Timer;
 
-import game.logic.BaseGameLogic;
-
-import game.logic.LocalGameLogic;
-
-import game.GameRender;
 import game.GameSetup;
+import game.logic.BaseGameLogic;
+import game.logic.LocalGameLogic;
 import game.logic.remote.RemoteGameLogic;
-
 
 public class Starter extends Sprite {
 
     public var gameSetup:GameSetup;
 
     public var isRemote:Boolean = true;
-    public var server:String = "localhost";
-    public var port:int = 8899;
+    public var server:String = "176.112.192.126";
+    public var port:int = 9999;
 
     public function Starter() {
 
