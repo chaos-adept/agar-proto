@@ -1,6 +1,7 @@
 apply plugin: 'scala'
 apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
+apply plugin: 'application'
 
 repositories {
   mavenCentral()
@@ -51,4 +52,6 @@ protobuf {
   }
 
 }
+
+mainClassName = "ServerStarter"
 
