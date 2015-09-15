@@ -18,10 +18,10 @@ mainClass = 'Starter'
 
 repositories {
     ivy {
-        name 'Apache Flex'
-        // pattern for url http://archive.apache.org/dist/flex/4.9.0/binaries/apache-flex-sdk-4.9.0-bin.zip
-        artifactPattern 'http://archive.apache.org/dist/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
+        name 'Apache'
+        artifactPattern 'http://apache.cu.be/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
     }
+
     ivy {
         name 'Adobe Air SDK'
         artifactPattern 'http://download.macromedia.com/air/win/download/[revision]/[module].[ext]'
@@ -29,9 +29,16 @@ repositories {
 }
 
 dependencies {
+    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.13.0', ext: 'tar.gz'
+    airSDK group: 'com.adobe', name: 'AdobeAIRSDK', version: '15.0', ext: 'zip'
+}
+
+sdkAutoInstall {
+    showPrompts	= false
+}
+
+dependencies {
     merged fileTree(dir: 'libs', include: '*.swc')
-    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.9.0', ext: Os.isFamily(Os.FAMILY_WINDOWS) ? 'zip' : 'tar.gz'
-    airSDK  group: 'com.adobe', name: 'AdobeAIRSDK', version: '3.4', ext: Os.isFamily(Os.FAMILY_WINDOWS) ? 'zip' : 'tbz2'
 }
 
 sdkAutoInstall {
