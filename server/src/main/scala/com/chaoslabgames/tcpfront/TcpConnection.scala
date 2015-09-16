@@ -90,7 +90,7 @@ class TcpConnection(
 //    }
 //
 //    session ! comm
-    log.debug("receive data")
+    //log.debug("receive data")
   }
 
   def sendData(cmd: Int, data: Array[Byte]) {
@@ -107,7 +107,7 @@ class TcpConnection(
 //    val msg: ByteString = ByteString(bb.array())
 //
 //    tcpAdapter ! Write(msg)
-    log.info("Cmd send: {}", cmd);
+    //log.info("Cmd send: {}", cmd);
 
     val trp: PacketMSG.Builder = PacketMSG.newBuilder()
     trp.setType(cmd)
