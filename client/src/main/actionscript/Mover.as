@@ -6,6 +6,7 @@ import flash.display.Sprite;
 import flash.geom.Point;
 
 public class Mover {
+    public var id:Number;
     public var color:Number;
     public var direction:Point;
     public var position:Point;

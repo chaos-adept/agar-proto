@@ -3,6 +3,7 @@
  */
 package game {
 import event.InitGameEvent;
+import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 
 import flash.display.Sprite;
@@ -38,10 +39,15 @@ public class GameSetup extends EventDispatcher {
         gameLogic.addEventListener(MoverEvent.PLAYER_LOGGED, function (e:MoverEvent):void {
             player = e.mover;
             playerInputController = new PlayerInputController(player);
+            playerInputController.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE, updateDirectionRequest);
             dispatchEvent(new InitGameEvent())
         });
 
         gameLogic.start(playerName);
+    }
+
+    private function updateDirectionRequest(event:MoverDirectionUpdateEvent):void {
+        gameLogic.updateDirectionRequestHandler(event);
     }
 
 

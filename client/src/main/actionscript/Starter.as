@@ -13,14 +13,15 @@ import flash.geom.Point;
 
 import game.GameSetup;
 import game.logic.BaseGameLogic;
-import game.logic.LocalGameLogic;
+import game.logic.local.LocalGameLogic;
 import game.logic.remote.RemoteGameLogic;
 
+[SWF(backgroundColor="#000000", frameRate="60", width="800", height="800")]
 public class Starter extends Sprite {
 
     public var gameSetup:GameSetup;
 
-    public var isRemote:Boolean = true;
+    public var isRemote:Boolean = false;
     public var server:String = "176.112.192.126";
     public var port:int = 9999;
 
@@ -50,10 +51,8 @@ public class Starter extends Sprite {
 
     private function onMouseMoveHandler(event:MouseEvent):void {
         //todo move to GameSetup?
-        var player:Mover = gameSetup.player;
-        var direction:Point = new Point(stage.mouseX - player.position.x, stage.mouseY - player.position.y);
-        var norm:Point = new Point(direction.x / direction.length, direction.y / direction.length);
-        gameSetup.playerInputController.updateDirection(norm);
+        var stageMousePosition:Point = new Point(stage.mouseX, stage.mouseY);
+        gameSetup.playerInputController.updateDirectionByMouse(stageMousePosition);
     }
 
 }

@@ -18,6 +18,8 @@ import com.furusystems.logging.slf4as.ILogger;
 import com.furusystems.logging.slf4as.Logging;
 import com.netease.protobuf.Message;
 
+import event.MoverDirectionUpdateEvent;
+
 import event.MoverEvent;
 
 import flash.events.Event;
@@ -27,6 +29,8 @@ import flash.utils.Dictionary;
 import flash.utils.Timer;
 
 import game.logic.*;
+
+import utils.Constants;
 
 public class RemoteGameLogic extends BaseGameLogic {
 
@@ -102,21 +106,22 @@ public class RemoteGameLogic extends BaseGameLogic {
 
     }
 
+    private var player:Mover = new Mover();
+
     private function onJoin(joinPkg:JoinEventPkg):void {
-        var mover:Mover = new Mover();
-        mover.color = joinPkg.data.color;
-        mover.direction = pkgToPoint(joinPkg.data.direction);
-        mover.position = pkgToPoint(joinPkg.data.position);
-        addMover(joinPkg.id.toNumber(), mover);
+        player.color = joinPkg.data.color;
+        player.direction = pkgToPoint(joinPkg.data.direction);
+        player.position = pkgToPoint(joinPkg.data.position);
+        addMover(joinPkg.id.toNumber(), player);
 
-        dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, mover));
+        dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, player));
 
-        var updateControllerTimer:Timer = new Timer(1000 / 30);
+        var updateControllerTimer:Timer = new Timer(Constants.FRAME_DURATION_IN_MILSEC);
         updateControllerTimer.addEventListener(TimerEvent.TIMER, function (e:Event):void {
             var updDirPkg:UpdateDirectionCmdPkg = new UpdateDirectionCmdPkg();
             updDirPkg.direction = new PointPkg();
-            updDirPkg.direction.x = mover.direction.x;
-            updDirPkg.direction.y = mover.direction.y;
+            updDirPkg.direction.x = player.direction.x;
+            updDirPkg.direction.y = player.direction.y;
             sendPacket(CMD_updateDirection, updDirPkg);
         });
         updateControllerTimer.start();
@@ -153,6 +158,11 @@ public class RemoteGameLogic extends BaseGameLogic {
                 onUpdateMover(updMoverPkg);
                 break;
         }
+    }
+
+
+    override public function updateDirectionRequestHandler(event:MoverDirectionUpdateEvent):void {
+        super.updateDirectionRequestHandler(event);
     }
 }
 }
