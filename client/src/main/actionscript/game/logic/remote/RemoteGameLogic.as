@@ -39,11 +39,11 @@ public class RemoteGameLogic extends BaseGameLogic {
     private var ags:AgsEngine;
     public static const log:ILogger = Logging.getLogger(RemoteGameLogic);
 
-    var CMD_Ping:uint = 1;
-    var CMD_login:uint = 2;
-    var CMD_updateDirection:uint = 3;
-    var EVENT_JOIN:uint = 4;
-    var EVENT_update_mover:uint = 5;
+    public var CMD_Ping:uint = 1;
+    public var CMD_login:uint = 2;
+    public var CMD_updateDirection:uint = 3;
+    public var EVENT_JOIN:uint = 4;
+    public var EVENT_update_mover:uint = 5;
 
     private var moverDict:Dictionary;
 

@@ -24,7 +24,6 @@ public class LocalGameLogicMovingController extends EventDispatcher {
     public function LocalGameLogicMovingController() {
         timer = new Timer(tickTime);
         timer.addEventListener(TimerEvent.TIMER, onTickHandler);
-        timer.start();
     }
 
     public function onTickHandler(e:TimerEvent):void {
