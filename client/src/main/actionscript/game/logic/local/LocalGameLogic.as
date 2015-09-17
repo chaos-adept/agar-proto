@@ -62,7 +62,7 @@ public class LocalGameLogic extends BaseGameLogic {
 
 
     override public function updateDirectionRequestHandler(e:MoverDirectionUpdateEvent):void {
-        movingController.requestNewMoverDirection(e.moverId, e.newDirection);
+        movingController.requestNewMoverDirectionHandler(e);
         super.updateDirectionRequestHandler(e);
     }
 }

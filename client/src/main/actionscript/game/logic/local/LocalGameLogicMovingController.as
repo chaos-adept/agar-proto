@@ -2,6 +2,7 @@
  * Created by Julia on 16.09.2015.
  */
 package game.logic.local {
+import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 import event.MoverPositionUpdateEvent;
 
@@ -41,7 +42,9 @@ public class LocalGameLogicMovingController extends EventDispatcher {
 
         lastTickTime += timeDelta;
     }
-
+    public function requestNewMoverDirectionHandler(e:MoverDirectionUpdateEvent):void {
+        requestNewMoverDirection(e.moverId, e.newDirection);
+    }
     public function requestNewMoverDirection(moverId:Number, newDirection:Point):void {
         //todo async update in the tick
         getMover(moverId).direction = newDirection
