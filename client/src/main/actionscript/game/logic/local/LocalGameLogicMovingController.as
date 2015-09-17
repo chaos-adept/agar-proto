@@ -62,5 +62,9 @@ public class LocalGameLogicMovingController extends EventDispatcher {
     public function addMover(mover:Mover):void {
         movers[mover.id] = mover
     }
+
+    public function newMoverHandler(event:MoverEvent):void {
+        addMover(event.mover);
+    }
 }
 }
