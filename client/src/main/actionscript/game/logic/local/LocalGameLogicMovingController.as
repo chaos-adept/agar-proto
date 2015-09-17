@@ -14,13 +14,12 @@ import flash.utils.Timer;
 
 import utils.Constants;
 
-public class LocalGameLogicMovingController extends EventDispatcher {
+public class LocalGameLogicMovingController extends BaseGameMovingController {
 
     private var timer:Timer;
     private var tickTime:Number = Constants.ABOVE_FRAME_DURATION_IN_MILSEC;
     private var lastTickTime:Number;
     private var speedKoef:Number = 1 / 3;
-    private var movers:Dictionary = new Dictionary();
 
     public function LocalGameLogicMovingController() {
         timer = new Timer(tickTime);
@@ -42,7 +41,7 @@ public class LocalGameLogicMovingController extends EventDispatcher {
 
         lastTickTime += timeDelta;
     }
-    public function requestNewMoverDirectionHandler(e:MoverDirectionUpdateEvent):void {
+    override public function requestNewMoverDirectionHandler(e:MoverDirectionUpdateEvent):void {
         requestNewMoverDirection(e.moverId, e.newDirection);
     }
     public function requestNewMoverDirection(moverId:Number, newDirection:Point):void {
@@ -50,21 +49,12 @@ public class LocalGameLogicMovingController extends EventDispatcher {
         getMover(moverId).direction = newDirection
     }
 
-    public function getMover(moverId:Number):Mover {
-        return movers[moverId]
-    }
-
-    public function start():void {
+    override public function start():void {
         lastTickTime = new Date().time;
         timer.start();
+        super.start();
     }
 
-    public function addMover(mover:Mover):void {
-        movers[mover.id] = mover
-    }
 
-    public function newMoverHandler(event:MoverEvent):void {
-        addMover(event.mover);
-    }
 }
 }

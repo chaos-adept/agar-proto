@@ -39,7 +39,7 @@ public class GameSetup extends EventDispatcher {
         gameLogic.addEventListener(MoverEvent.PLAYER_LOGGED, function (e:MoverEvent):void {
             player = e.mover;
             playerInputController = new PlayerInputController(player);
-            playerInputController.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE, updateDirectionRequest);
+            playerInputController.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE_DIRECTION, updateDirectionRequest);
             dispatchEvent(new InitGameEvent())
         });
 

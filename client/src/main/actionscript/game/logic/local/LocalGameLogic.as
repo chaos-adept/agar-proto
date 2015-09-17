@@ -11,7 +11,7 @@ import flash.utils.Dictionary;
 
 import game.logic.*;
 
-public class LocalGameLogic extends BaseGameLogic {
+public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager {
 
     private var moverCouner:Number;
     private var movers:Dictionary = new Dictionary();
@@ -20,9 +20,10 @@ public class LocalGameLogic extends BaseGameLogic {
 
     public function LocalGameLogic() {
         movingController = new LocalGameLogicMovingController();
-        movingController.addEventListener(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, onUpdatePositionHandler);
-        this.addEventListener(MoverEvent.EVENT_NEW_MOVER, this.movingController.newMoverHandler);
-        this.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE, movingController.requestNewMoverDirectionHandler);
+//        movingController.addEventListener(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, onUpdatePositionHandler);
+//        this.addEventListener(MoverEvent.EVENT_NEW_MOVER, this.movingController.newMoverHandler);
+//        this.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE_DIRECTION, movingController.requestNewMoverDirectionHandler);
+        movingController.attach(this);
     }
 
     public function registerMover(mover:Mover):void {
