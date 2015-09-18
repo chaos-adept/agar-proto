@@ -17,9 +17,9 @@ import utils.Constants;
 public class LocalGameLogicMovingController extends BaseGameMovingController {
 
     private var timer:Timer;
-    private var tickTime:Number = Constants.ABOVE_FRAME_DURATION_IN_MILSEC;
+    private var tickTime:Number = Constants.FRAME_DURATION_IN_MILSEC;
     private var lastTickTime:Number;
-    private var speedKoef:Number = 1 / 3;
+
 
     public function LocalGameLogicMovingController() {
         timer = new Timer(tickTime);
@@ -33,8 +33,9 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
             var direction:Point = mover.direction;
             if (direction.length > 0) {
                 var newPos:Point = new Point();
-                newPos.x = mover.position.x + direction.x * speedKoef * timeDelta;
-                newPos.y = mover.position.y + direction.y * speedKoef * timeDelta;
+                var timeMultVal = Constants.ENABLE_SPEED_BASED_ON_CYCLE_TIME ? timeDelta : 1 ;
+                newPos.x = mover.position.x + direction.x * Constants.SPEED_KOEF * timeMultVal;
+                newPos.y = mover.position.y + direction.y * Constants.SPEED_KOEF * timeMultVal;
                 dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, mover.id, newPos, mover.direction))
             }
         }
