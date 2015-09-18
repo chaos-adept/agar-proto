@@ -15,5 +15,10 @@ public class MoverEvent extends Event {
         super(eventType);
         this.mover = mover;
     }
+
+
+    override public function clone():Event {
+        return new MoverEvent(type, mover);
+    }
 }
 }

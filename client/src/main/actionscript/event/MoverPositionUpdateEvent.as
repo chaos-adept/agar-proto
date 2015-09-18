@@ -15,8 +15,13 @@ public class MoverPositionUpdateEvent extends Event {
     public function MoverPositionUpdateEvent(type:String, moverId:Number, newPos:Point, newDirection:Point) {
         super(type);
         this.moverId = moverId;
-        this.newDirection = newPos;
-        this.newPosition = newDirection;
+        this.newDirection = newDirection;
+        this.newPosition = newPos;
+    }
+
+
+    override public function clone():Event {
+        return new MoverPositionUpdateEvent(type, moverId, newPosition, newDirection);
     }
 }
 }
