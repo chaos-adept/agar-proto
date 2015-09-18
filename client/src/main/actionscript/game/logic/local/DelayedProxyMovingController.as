@@ -14,18 +14,21 @@ import flash.utils.Timer;
 public class DelayedProxyMovingController extends BaseGameMovingController implements IUserSessionManager {
 
     private var target:BaseGameMovingController;
-    private var dispatchDelay:Number;
+    private var minDelay:Number;
+    private var maxDelay:Number;
 
-    public function DelayedProxyMovingController(dispatchDelay:Number, target:BaseGameMovingController) {
+    public function DelayedProxyMovingController(minDelay:Number, maxDelay:Number, target:BaseGameMovingController) {
         this.target = target;
-        this.dispatchDelay = dispatchDelay;
+        this.minDelay = minDelay;
+        this.maxDelay = maxDelay;
         this.target.attach(this);
     }
 
 
     [cppcall]
     override public function dispatchEvent(targetEvent:Event):Boolean {
-        var timer:Timer = new Timer(dispatchDelay, 1);
+        var delay:Number = Math.random() * (maxDelay - minDelay) + minDelay;
+        var timer:Timer = new Timer(delay, 1);
         var doDispatchEvent:Function = super.dispatchEvent;
         var timerHandler:Function = function (timerEvent:Event):void {
             doDispatchEvent(targetEvent);

@@ -48,7 +48,12 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     }
     public function requestNewMoverDirection(moverId:Number, newDirection:Point):void {
         //todo async update in the tick
-        getMover(moverId).direction = newDirection
+        var mover = getMover(moverId);
+        if (!mover) {
+            return;
+        }
+
+        mover.direction = newDirection
     }
 
     override public function start():void {
