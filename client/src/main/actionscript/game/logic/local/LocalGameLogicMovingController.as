@@ -37,6 +37,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
                 newPos.x = mover.position.x + direction.x * Constants.SPEED_KOEF * timeMultVal;
                 newPos.y = mover.position.y + direction.y * Constants.SPEED_KOEF * timeMultVal;
                 dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, mover.id, newPos, mover.direction))
+                mover.position = newPos;
             }
         }
 

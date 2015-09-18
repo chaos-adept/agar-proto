@@ -22,7 +22,7 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
 
     public function LocalGameLogic() {
         var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController();
-        movingController = new DelayedProxyMovingController(Constants.POSITION_EVENT_DELAY, localMoverController);
+        movingController = new DelayedProxyMovingController(Constants.POSITION_EVENT_PROXY_DELAY, localMoverController);
 //        movingController.addEventListener(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, onUpdatePositionHandler);
 //        this.addEventListener(MoverEvent.EVENT_NEW_MOVER, this.movingController.newMoverHandler);
 //        this.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE_DIRECTION, movingController.requestNewMoverDirectionHandler);

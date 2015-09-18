@@ -38,7 +38,7 @@ public class BaseGameMovingController extends EventDispatcher {
     }
 
     public function addMover(mover:Mover):void {
-        movers[mover.id] = mover
+        movers[mover.id] = mover.clone()
     }
 
     public function newMoverHandler(e:MoverEvent):void {

@@ -17,5 +17,13 @@ public class Mover {
     }
 
 
+    public function clone():Mover {
+        var m:Mover = new Mover();
+        m.color = this.color;
+        m.direction = this.direction.clone();
+        m.position = this.position.clone();
+        m.id = this.id;
+        return m;
+    }
 }
 }
