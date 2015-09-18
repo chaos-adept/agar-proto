@@ -47,12 +47,13 @@ public class Starter extends Sprite {
     }
 
     private function onEnterFrameHandler(event:Event):void {
+        var stageMousePosition:Point = new Point(stage.mouseX, stage.mouseY);
+        gameSetup.playerInputController.updateDirectionByMouse(stageMousePosition);
     }
 
     private function onMouseMoveHandler(event:MouseEvent):void {
         //todo move to GameSetup?
-        var stageMousePosition:Point = new Point(stage.mouseX, stage.mouseY);
-        gameSetup.playerInputController.updateDirectionByMouse(stageMousePosition);
+
     }
 
 }
