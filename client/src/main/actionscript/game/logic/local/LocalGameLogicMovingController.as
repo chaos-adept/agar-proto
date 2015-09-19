@@ -19,7 +19,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     private var timer:Timer;
     private var tickTime:Number = Constants.FRAME_DURATION_IN_MILSEC;
     private var lastTickTime:Number;
-
+    private var tickCouner:Number;
 
     public function LocalGameLogicMovingController() {
         timer = new Timer(tickTime);
@@ -27,7 +27,9 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     }
 
     public function onTickHandler(e:TimerEvent):void {
-        var timeDelta:Number = new Date().time - lastTickTime;
+        var time:Number = new Date().time;
+        var timeDelta:Number = time - lastTickTime;
+        var tickId:Number = tickCouner++;
 
         for each (var mover:Mover in movers) {
             var direction:Point = mover.direction;
@@ -36,7 +38,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
                 var timeMultVal = Constants.ENABLE_SPEED_BASED_ON_CYCLE_TIME ? timeDelta : 1 ;
                 newPos.x = mover.position.x + direction.x * Constants.SPEED_KOEF * timeMultVal;
                 newPos.y = mover.position.y + direction.y * Constants.SPEED_KOEF * timeMultVal;
-                dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, mover.id, newPos, mover.direction))
+                dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, time, mover.id, newPos, mover.direction))
                 mover.position = newPos;
             }
         }
@@ -58,6 +60,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
 
     override public function start():void {
         lastTickTime = new Date().time;
+        tickCouner = 0;
         timer.start();
         super.start();
     }

@@ -19,6 +19,8 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
     private var movers:Dictionary = new Dictionary();
     private var gameTotalTime:int;
     private var movingController:BaseGameMovingController;
+    private var lastTickId:Number;
+
 
     public function LocalGameLogic() {
         var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController();
@@ -38,6 +40,10 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
     }
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
+        if (lastTickId > e.tickId) {
+            return;
+        }
+        lastTickId = e.tickId;
         var mover:Mover = movers[e.moverId];
         mover.position = e.newPosition;
         mover.direction = e.newDirection;
