@@ -16,7 +16,7 @@ import game.logic.BaseGameLogic;
 import game.logic.local.LocalGameLogic;
 import game.logic.remote.RemoteGameLogic;
 
-[SWF(backgroundColor="#000000", frameRate="60", width="800", height="800")]
+[SWF(backgroundColor="#000000", frameRate="60", width="1700", height="800")]
 public class Starter extends Sprite {
 
     public var gameSetup:GameSetup;

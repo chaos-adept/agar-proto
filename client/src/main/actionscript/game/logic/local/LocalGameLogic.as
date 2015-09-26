@@ -17,19 +17,16 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
 
     private var moverCouner:Number;
     private var movers:Dictionary = new Dictionary();
-    private var gameTotalTime:int;
+    private var isDelayedController:Boolean = true;
     private var movingController:BaseGameMovingController;
     private var lastTickId:Number;
 
 
     public function LocalGameLogic() {
         var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController();
-        movingController = new DelayedProxyMovingController(
+        movingController = !isDelayedController ? localMoverController : new DelayedProxyMovingController(
                 Constants.POSITION_EVENT_PROXY_MIN_DELAY,
                 Constants.POSITION_EVENT_PROXY_MAX_DELAY, localMoverController);
-//        movingController.addEventListener(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, onUpdatePositionHandler);
-//        this.addEventListener(MoverEvent.EVENT_NEW_MOVER, this.movingController.newMoverHandler);
-//        this.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE_DIRECTION, movingController.requestNewMoverDirectionHandler);
 
         movingController.attach(this);
     }
@@ -41,6 +38,7 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
         if (lastTickId > e.tickId) {
+            trace(e.tickId);
             return;
         }
         lastTickId = e.tickId;
@@ -71,8 +69,11 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
 
 
     override public function updateDirectionRequestHandler(e:MoverDirectionUpdateEvent):void {
-        dispatchEvent(e);
+        if (e.isTickIdUnknown) {
+            e.tickId = lastTickId;
+        }
         super.updateDirectionRequestHandler(e);
+        dispatchEvent(e);
     }
 }
 }

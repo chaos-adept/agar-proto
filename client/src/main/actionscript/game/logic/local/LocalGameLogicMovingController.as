@@ -20,6 +20,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     private var tickTime:Number = Constants.FRAME_DURATION_IN_MILSEC;
     private var lastTickTime:Number;
     private var tickCouner:Number;
+    private var localMoverTicks:Dictionary = new Dictionary();
 
     public function LocalGameLogicMovingController() {
         timer = new Timer(tickTime);
@@ -46,11 +47,16 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
         lastTickTime += timeDelta;
     }
     override public function requestNewMoverDirectionHandler(e:MoverDirectionUpdateEvent):void {
+        var lastMoverLocalTick = localMoverTicks[e.moverId];
+        if (lastMoverLocalTick > e.tickId) {
+            return;
+        }
+        localMoverTicks[e.moverId] = e.tickId;
         requestNewMoverDirection(e.moverId, e.newDirection);
     }
     public function requestNewMoverDirection(moverId:Number, newDirection:Point):void {
         //todo async update in the tick
-        var mover = getMover(moverId);
+        var mover:Mover = getMover(moverId);
         if (!mover) {
             return;
         }

@@ -15,6 +15,7 @@ public class MoverPositionUpdateEvent extends Event {
 
     public function MoverPositionUpdateEvent(type:String, tickId:Number, moverId:Number, newPos:Point, newDirection:Point) {
         super(type);
+        this.tickId = tickId;
         this.moverId = moverId;
         this.newDirection = newDirection;
         this.newPosition = newPos;
