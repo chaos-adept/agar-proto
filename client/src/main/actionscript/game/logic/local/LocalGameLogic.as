@@ -24,9 +24,11 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
 
     public function LocalGameLogic() {
         var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController();
-        movingController = !isDelayedController ? localMoverController : new DelayedProxyMovingController(
-                Constants.POSITION_EVENT_PROXY_MIN_DELAY,
-                Constants.POSITION_EVENT_PROXY_MAX_DELAY, localMoverController);
+        movingController = !isDelayedController ? localMoverController :
+                new ApproxProxyMovingController(
+                        new DelayedProxyMovingController(
+                                Constants.POSITION_EVENT_PROXY_MIN_DELAY,
+                                Constants.POSITION_EVENT_PROXY_MAX_DELAY, localMoverController));
 
         movingController.attach(this);
     }

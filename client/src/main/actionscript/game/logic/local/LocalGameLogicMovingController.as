@@ -34,14 +34,14 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
 
         for each (var mover:Mover in movers) {
             var direction:Point = mover.direction;
-            if (direction.length > 0) {
+
                 var newPos:Point = new Point();
                 var timeMultVal = Constants.ENABLE_SPEED_BASED_ON_CYCLE_TIME ? timeDelta : 1 ;
                 newPos.x = mover.position.x + direction.x * Constants.SPEED_KOEF * timeMultVal;
                 newPos.y = mover.position.y + direction.y * Constants.SPEED_KOEF * timeMultVal;
                 dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, time, mover.id, newPos, mover.direction))
                 mover.position = newPos;
-            }
+
         }
 
         lastTickTime += timeDelta;
