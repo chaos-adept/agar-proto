@@ -20,7 +20,9 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
 
     public var parent:BaseGameMovingController;
     private var moverHistories:Dictionary = new Dictionary();
-    private var localTickId:Number;
+    private var maxHistory:Number = Constants.MAX_DRAW_POSITION_HISTORY;
+
+
 
     public function ApproxProxyMovingController(parent:BaseGameMovingController) {
         this.parent = parent;
@@ -33,8 +35,8 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
             return mover.position;
         }
 
-        var p1:MoverHistoryItem = history.historyItems[0];
-        var p2:MoverHistoryItem = history.historyItems[1];
+        var p1:MoverHistoryItem = history.historyItems[history.historyItems.length-2];
+        var p2:MoverHistoryItem = history.historyItems[history.historyItems.length-1];
         var possibleMovingDir:Point = p2.moverCopy.position.subtract(p1.moverCopy.position);
 
         trace("possible moving dir " + possibleMovingDir , p1.moverCopy.position, p2.moverCopy.position);
@@ -50,12 +52,11 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
     }
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
-        var moverHistory:MoverHistory = moverHistories[e.moverId];
+        var moverHistory:MoverHistory = getParentHistory(e.moverId);
         if ( !moverHistory ) {
-            moverHistory = new MoverHistory(2);
-            moverHistories[e.moverId] = moverHistory
+
         } else {
-            if (moverHistory.last.tickId > e.tickId) {
+            if (moverHistory.last && (moverHistory.last.tickId > e.tickId)) {
                 return; //ignore missed
             }
         }
@@ -67,6 +68,12 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
     }
 
     public function getParentHistory(moverId:int):MoverHistory {
+        var moverHistory:MoverHistory = moverHistories[moverId];
+        if (!moverHistory) {
+            moverHistory = new MoverHistory(maxHistory);
+            moverHistories[moverId] = moverHistory;
+            getMover(moverId).moverDebugInfo.approx_parent_mover_history = moverHistory;
+        }
         return moverHistories[moverId]
     }
 
@@ -74,7 +81,7 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
         var parentEvent:MoverDirectionUpdateEvent = MoverDirectionUpdateEvent(e.clone());
         var lastParentState:MoverHistory = getParentHistory(e.moverId);
 
-        if (lastParentState) {
+        if (lastParentState && lastParentState.last) {
             parentEvent.tickId = lastParentState.last.tickId;
             dispatchEvent(parentEvent);
         }
@@ -88,6 +95,11 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
         dispatchEvent(e);
     }
 
+
+    override public function addMover(mover:Mover):void {
+        super.addMover(mover);
+
+    }
 
     override public function start():void {
         super.start();

@@ -19,7 +19,7 @@ public class GameRender extends Sprite {
 
     private var movers:Dictionary = new Dictionary();
     private var moverHistories:Dictionary = new Dictionary();
-
+    private var directionSize:Number = 20;
 
     public function GameRender() {
         this.addEventListener(Event.ENTER_FRAME, render)
@@ -34,27 +34,15 @@ public class GameRender extends Sprite {
     private function renderMover(mover:Mover):void {
         this.graphics.clear();
 
-        var directionSize:Number = 20;
+
         var moverHistory:MoverHistory = moverHistories[mover.id];
         if (!moverHistory) {
             return;
         }
 
-        if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
-            for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
-                var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
-                var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
-                var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
-                this.graphics.lineStyle(1, mover.color, alpha );
-                this.graphics.moveTo(prevState.position.x, prevState.position.y);
-                this.graphics.lineTo(nextState.position.x, nextState.position.y);
+        drawHistory(moverHistory, mover.color);
+        drawHistory(mover.moverDebugInfo.approx_parent_mover_history, ~mover.color);
 
-                this.graphics.drawCircle(nextState.position.x, nextState.position.y, 3);
-                this.graphics.lineStyle(1, ~nextState.color, alpha);
-                this.graphics.lineTo(nextState.position.x + nextState.direction.x, nextState.position.y + nextState.direction.y);
-                this.graphics.lineTo(nextState.position.x + nextState.direction.x * directionSize, nextState.position.y + nextState.direction.y * directionSize);
-            }
-        }
         var drawMover:Mover = moverHistory.findAgoMilSec(Constants.RENDER_DELAY);
         if (drawMover) {
             this.graphics.lineStyle(1, drawMover.color);
@@ -65,6 +53,26 @@ public class GameRender extends Sprite {
 
             drawMover.view.x = drawMover.position.x;
             drawMover.view.y = drawMover.position.y;
+        }
+    }
+
+    private function drawHistory(moverHistory:MoverHistory, color:Number):void {
+
+
+        if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
+            for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
+                var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
+                var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
+                var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
+                this.graphics.lineStyle(1, color, alpha );
+                this.graphics.moveTo(prevState.position.x, prevState.position.y);
+                this.graphics.lineTo(nextState.position.x, nextState.position.y);
+
+                this.graphics.drawCircle(nextState.position.x, nextState.position.y, 3);
+                this.graphics.lineStyle(1, ~color, alpha);
+                this.graphics.lineTo(nextState.position.x + nextState.direction.x, nextState.position.y + nextState.direction.y);
+                this.graphics.lineTo(nextState.position.x + nextState.direction.x * directionSize, nextState.position.y + nextState.direction.y * directionSize);
+            }
         }
     }
 

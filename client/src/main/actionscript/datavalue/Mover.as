@@ -10,7 +10,9 @@ public class Mover {
     public var color:Number;
     public var direction:Point;
     public var position:Point;
-    public var view:Sprite;
+    public var view:Sprite; //fixme remove
+
+    public var moverDebugInfo:MoverDebugInfo = new MoverDebugInfo();
 
     public function Mover() {
 
@@ -24,6 +26,7 @@ public class Mover {
         m.position = this.position.clone();
         m.id = this.id;
         m.view = this.view;
+        m.moverDebugInfo = this.moverDebugInfo;
         return m;
     }
 }

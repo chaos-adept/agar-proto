@@ -4,7 +4,7 @@
 package utils {
 public class Constants {
 
-    public static const MAX_DRAW_POSITION_HISTORY:Number = 150;
+    public static const MAX_DRAW_POSITION_HISTORY:Number = 100;
     public static const RENDER_DELAY:Number = 100;
     public static const TARGET_FRAMES_PER_SEC:Number = 60;
     public static const FRAME_DURATION_IN_MILSEC:Number = 1000 / TARGET_FRAMES_PER_SEC;

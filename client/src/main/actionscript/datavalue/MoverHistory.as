@@ -11,7 +11,14 @@ public class MoverHistory {
         this.maxSize = maxSize;
     }
 
-    public function get last():MoverHistoryItem { return historyItems[historyItems.length-1] }
+    public function get last():MoverHistoryItem {
+        if (historyItems.length == 0) {
+            return null;
+        } else {
+            return historyItems[historyItems.length-1]
+        }
+
+    }
 
     public function add(m:Mover, tickId:Number):void {
         if (historyItems.length == maxSize) {
@@ -34,6 +41,12 @@ public class MoverHistory {
         }
 
         return null;
+    }
+
+    public function clone():MoverHistory {
+        var mh:MoverHistory = new MoverHistory(maxSize);
+        mh.historyItems = new Array().concat(mh.historyItems)
+        return mh;
     }
 }
 }
