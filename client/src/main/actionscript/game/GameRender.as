@@ -1,7 +1,14 @@
 /**
  * Created by Julia on 13.09.2015.
+import datavalue.MoverHistory;
+import datavalue.MoverHistoryItem;
  */
 package game {
+import datavalue.Mover;
+import datavalue.MoverHistory;
+
+import event.MoverPositionUpdateEvent;
+
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.utils.Dictionary;
@@ -10,7 +17,7 @@ import utils.Constants;
 
 public class GameRender extends Sprite {
 
-    private var movers:Array = [];
+    private var movers:Dictionary = new Dictionary();
     private var moverHistories:Dictionary = new Dictionary();
 
 
@@ -19,27 +26,23 @@ public class GameRender extends Sprite {
     }
 
     public function render(e:Event):void {
-        movers.forEach(function (mover:Mover, indx:Number, arr:Array):void {
-            updateMover(mover);
-        }, this);
+        for each (var mover:Mover in movers) {
+            renderMover(mover);
+        }
     }
 
-    private function updateMover(mover:Mover):void {
+    private function renderMover(mover:Mover):void {
         this.graphics.clear();
 
         var directionSize:Number = 20;
-        var maxHistory:Number = Constants.MAX_DRAW_POSITION_HISTORY;
-
         var moverHistory:MoverHistory = moverHistories[mover.id];
-        if ( !moverHistory ) {
-            moverHistory = new MoverHistory(maxHistory);
-            moverHistories[mover.id] = moverHistory
+        if (!moverHistory) {
+            return;
         }
-        moverHistory.add(mover);
 
-        if (moverHistory.historyItems.length > 1 && Constants.ENABLE_DEBUG_DRAW) {
+        if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
             for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
-                var alpha:Number = (indx/maxHistory);
+                var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
                 var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
                 var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
                 this.graphics.lineStyle(1, mover.color, alpha );
@@ -73,45 +76,22 @@ public class GameRender extends Sprite {
         view.graphics.endFill();
         mover.view = view;
         this.addChild(view);
-        movers.push(mover)
-    }
-}
-
-}
-
-class MoverHistoryItem {
-    public var time:Number;
-    public var moverCopy:Mover;
-}
-
-class MoverHistory {
-    public var historyItems:Array = [];
-
-    public var maxSize:Number;
-
-    public function MoverHistory(maxSize:Number) {
-        this.maxSize = maxSize;
+        movers[mover.id] = mover
     }
 
-    public function add(m:Mover):void {
-        if (historyItems.length == maxSize) {
-            historyItems.shift();
+    public function updateMoverPositionHandler(e:MoverPositionUpdateEvent):void {
+        var mover:Mover = movers[e.moverId];
+        mover.position = e.newPosition;
+        mover.direction = e.newDirection;
+
+        var moverHistory:MoverHistory = moverHistories[mover.id];
+        if ( !moverHistory ) {
+            moverHistory = new MoverHistory(Constants.MAX_DRAW_POSITION_HISTORY);
+            moverHistories[mover.id] = moverHistory
         }
+        moverHistory.add(mover, e.tickId);
 
-        var item:MoverHistoryItem = new MoverHistoryItem();
-        item.moverCopy = m.clone();
-        item.time = new Date().time;
-        historyItems.push(item);
     }
+}
 
-    public function findAgoMilSec(milSec:int):Mover {
-        var minTime:Number = new Date().time - milSec;
-        for (var indx:Number = historyItems.length-1; indx > 0; indx--) {
-            if (historyItems[indx].time < minTime) {
-                return historyItems[indx].moverCopy
-            }
-        }
-
-        return null;
-    }
 }

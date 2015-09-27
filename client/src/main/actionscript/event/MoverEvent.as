@@ -2,6 +2,8 @@
  * Created by Julia on 14.09.2015.
  */
 package event {
+import datavalue.Mover;
+
 import flash.events.Event;
 
 public class MoverEvent extends Event {

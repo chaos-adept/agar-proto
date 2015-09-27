@@ -2,6 +2,8 @@
  * Created by Julia on 18.09.2015.
  */
 package game.logic.local {
+import datavalue.Mover;
+
 import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 import event.MoverPositionUpdateEvent;

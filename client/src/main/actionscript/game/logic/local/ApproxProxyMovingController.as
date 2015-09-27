@@ -2,16 +2,24 @@
  * Created by Julia on 27.09.2015.
  */
 package game.logic.local {
+import datavalue.Mover;
+import datavalue.MoverHistory;
+import datavalue.MoverHistoryItem;
+
 import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 import event.MoverPositionUpdateEvent;
 
+import flash.geom.Point;
+
 import flash.utils.Dictionary;
 
-public class ApproxProxyMovingController extends BaseGameMovingController implements IUserSessionManager {
+import utils.Constants;
+
+public class ApproxProxyMovingController extends LocalGameLogicMovingController implements IUserSessionManager {
 
     public var parent:BaseGameMovingController;
-    private var moverParentLastState:Dictionary = new Dictionary();
+    private var moverHistories:Dictionary = new Dictionary();
     private var localTickId:Number;
 
     public function ApproxProxyMovingController(parent:BaseGameMovingController) {
@@ -19,23 +27,59 @@ public class ApproxProxyMovingController extends BaseGameMovingController implem
         this.parent.attach(this)
     }
 
-    public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
-        moverParentLastState[e.moverId] = e.clone();
-        dispatchEvent(e);
+    override protected function calcNewMoverPosition(mover:Mover, timeDelta:Number):Point {
+        var history:MoverHistory = getParentHistory(mover.id);
+        if (!(history && history.historyItems.length > 1)) {
+            return mover.position;
+        }
+
+        var p1:MoverHistoryItem = history.historyItems[0];
+        var p2:MoverHistoryItem = history.historyItems[1];
+        var possibleMovingDir:Point = p2.moverCopy.position.subtract(p1.moverCopy.position);
+
+        trace("possible moving dir " + possibleMovingDir , p1.moverCopy.position, p2.moverCopy.position);
+        if (possibleMovingDir.length == 0) {
+            return mover.position;
+        }
+
+        var norm:Point = new Point(possibleMovingDir.x / possibleMovingDir.length, possibleMovingDir.y / possibleMovingDir.length);
+        var newPos:Point = new Point();
+        newPos.x = mover.position.x + norm.x * Constants.SPEED_KOEF * timeDelta;
+        newPos.y = mover.position.y + norm.y * Constants.SPEED_KOEF * timeDelta;
+        return newPos;
     }
 
-    public function getParentLastState(moverId:int):MoverPositionUpdateEvent {
-        return moverParentLastState[moverId]
+    public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
+        var moverHistory:MoverHistory = moverHistories[e.moverId];
+        if ( !moverHistory ) {
+            moverHistory = new MoverHistory(2);
+            moverHistories[e.moverId] = moverHistory
+        } else {
+            if (moverHistory.last.tickId > e.tickId) {
+                return; //ignore missed
+            }
+        }
+
+        var mover:Mover = getMover(e.moverId).clone();
+        mover.position = e.newPosition;
+        mover.direction = e.newDirection;
+        moverHistory.add(mover, e.tickId);
+    }
+
+    public function getParentHistory(moverId:int):MoverHistory {
+        return moverHistories[moverId]
     }
 
     override public function requestNewMoverDirectionHandler(e:MoverDirectionUpdateEvent):void {
         var parentEvent:MoverDirectionUpdateEvent = MoverDirectionUpdateEvent(e.clone());
-        var lastParentState:MoverPositionUpdateEvent = getParentLastState(e.moverId);
+        var lastParentState:MoverHistory = getParentHistory(e.moverId);
 
         if (lastParentState) {
-            parentEvent.tickId = lastParentState.tickId;
+            parentEvent.tickId = lastParentState.last.tickId;
             dispatchEvent(parentEvent);
         }
+
+        getMover(e.moverId).direction = e.newDirection;
     }
 
 

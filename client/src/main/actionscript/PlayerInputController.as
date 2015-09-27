@@ -2,6 +2,8 @@
  * Created by Julia on 13.09.2015.
  */
 package {
+import datavalue.Mover;
+
 import event.MoverDirectionUpdateEvent;
 
 import flash.events.EventDispatcher;

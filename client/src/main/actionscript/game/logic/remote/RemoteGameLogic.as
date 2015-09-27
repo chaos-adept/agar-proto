@@ -18,6 +18,8 @@ import com.furusystems.logging.slf4as.ILogger;
 import com.furusystems.logging.slf4as.Logging;
 import com.netease.protobuf.Message;
 
+import datavalue.Mover;
+
 import event.MoverDirectionUpdateEvent;
 
 import event.MoverEvent;

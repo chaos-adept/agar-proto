@@ -2,9 +2,12 @@
  * Created by Julia on 13.09.2015.
  */
 package game {
+import datavalue.Mover;
+
 import event.InitGameEvent;
 import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
+import event.MoverPositionUpdateEvent;
 
 import flash.display.Sprite;
 import flash.events.EventDispatcher;
@@ -35,6 +38,7 @@ public class GameSetup extends EventDispatcher {
         gameLogic.addEventListener(MoverEvent.EVENT_NEW_MOVER, function (e:MoverEvent):void {
             gameRender.bindView(e.mover);
         });
+        gameLogic.addEventListener(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, gameRender.updateMoverPositionHandler);
 
         gameLogic.addEventListener(MoverEvent.PLAYER_LOGGED, function (e:MoverEvent):void {
             player = e.mover;

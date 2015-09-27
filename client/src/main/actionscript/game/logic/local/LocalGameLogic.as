@@ -2,6 +2,8 @@
  * Created by Julia on 13.09.2015.
  */
 package game.logic.local {
+import datavalue.Mover;
+
 import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 import event.MoverPositionUpdateEvent;
@@ -47,6 +49,8 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
         var mover:Mover = movers[e.moverId];
         mover.position = e.newPosition;
         mover.direction = e.newDirection;
+
+        dispatchEvent(e);
     }
 
     override public function start(playerName:String):void {
