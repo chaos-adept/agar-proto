@@ -37,30 +37,32 @@ public class GameRender extends Sprite {
         }
         moverHistory.add(mover);
 
-        if (moverHistory.movers.length > 1) {
-
-
-            for ( var indx:Number = 1; indx < moverHistory.movers.length-1; indx++ ) {
-                var alpha:Number = (indx/maxHistory)
+        if (moverHistory.historyItems.length > 1 && Constants.ENABLE_DEBUG_DRAW) {
+            for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
+                var alpha:Number = (indx/maxHistory);
+                var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
+                var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
                 this.graphics.lineStyle(1, mover.color, alpha );
-                this.graphics.moveTo(moverHistory.movers[indx-1].position.x, moverHistory.movers[indx-1].position.y);
-                this.graphics.lineTo(moverHistory.movers[indx].position.x, moverHistory.movers[indx].position.y);
+                this.graphics.moveTo(prevState.position.x, prevState.position.y);
+                this.graphics.lineTo(nextState.position.x, nextState.position.y);
 
-                this.graphics.drawCircle(moverHistory.movers[indx].position.x, moverHistory.movers[indx].position.y, 3);
-                this.graphics.lineStyle(1, ~mover.color, alpha);
-                this.graphics.lineTo(moverHistory.movers[indx].position.x + moverHistory.movers[indx].direction.x, moverHistory.movers[indx].position.y + moverHistory.movers[indx].direction.y);
-                this.graphics.lineTo(moverHistory.movers[indx].position.x + moverHistory.movers[indx].direction.x * directionSize, moverHistory.movers[indx].position.y + moverHistory.movers[indx].direction.y * directionSize);
+                this.graphics.drawCircle(nextState.position.x, nextState.position.y, 3);
+                this.graphics.lineStyle(1, ~nextState.color, alpha);
+                this.graphics.lineTo(nextState.position.x + nextState.direction.x, nextState.position.y + nextState.direction.y);
+                this.graphics.lineTo(nextState.position.x + nextState.direction.x * directionSize, nextState.position.y + nextState.direction.y * directionSize);
             }
         }
+        var drawMover:Mover = moverHistory.findAgoMilSec(Constants.RENDER_DELAY);
+        if (drawMover) {
+            this.graphics.lineStyle(1, drawMover.color);
+            this.graphics.drawCircle(drawMover.position.x, drawMover.position.y, 3);
 
-        this.graphics.lineStyle(1, mover.color);
-        this.graphics.drawCircle(mover.position.x, mover.position.y, 3);
+            this.graphics.lineTo(drawMover.position.x + drawMover.direction.x, drawMover.position.y + drawMover.direction.y);
+            this.graphics.lineTo(drawMover.position.x + drawMover.direction.x * directionSize, drawMover.position.y + drawMover.direction.y * directionSize);
 
-        this.graphics.lineTo(mover.position.x + mover.direction.x, mover.position.y + mover.direction.y);
-        this.graphics.lineTo(mover.position.x + mover.direction.x * directionSize, mover.position.y + mover.direction.y * directionSize);
-
-        mover.view.x = mover.position.x;
-        mover.view.y = mover.position.y;
+            drawMover.view.x = drawMover.position.x;
+            drawMover.view.y = drawMover.position.y;
+        }
     }
 
     public function bindView(mover:Mover):void {
@@ -77,8 +79,13 @@ public class GameRender extends Sprite {
 
 }
 
+class MoverHistoryItem {
+    public var time:Number;
+    public var moverCopy:Mover;
+}
+
 class MoverHistory {
-    public var movers:Array = [];
+    public var historyItems:Array = [];
 
     public var maxSize:Number;
 
@@ -87,9 +94,24 @@ class MoverHistory {
     }
 
     public function add(m:Mover):void {
-        if (movers.length == maxSize) {
-            movers.shift();
+        if (historyItems.length == maxSize) {
+            historyItems.shift();
         }
-        movers.push(m.clone())
+
+        var item:MoverHistoryItem = new MoverHistoryItem();
+        item.moverCopy = m.clone();
+        item.time = new Date().time;
+        historyItems.push(item);
+    }
+
+    public function findAgoMilSec(milSec:int):Mover {
+        var minTime:Number = new Date().time - milSec;
+        for (var indx:Number = historyItems.length-1; indx > 0; indx--) {
+            if (historyItems[indx].time < minTime) {
+                return historyItems[indx].moverCopy
+            }
+        }
+
+        return null;
     }
 }

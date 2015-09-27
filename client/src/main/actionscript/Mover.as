@@ -23,6 +23,7 @@ public class Mover {
         m.direction = this.direction.clone();
         m.position = this.position.clone();
         m.id = this.id;
+        m.view = this.view;
         return m;
     }
 }
