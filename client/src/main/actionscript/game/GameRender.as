@@ -69,7 +69,7 @@ public class GameRender extends Sprite {
                 this.graphics.lineTo(nextState.position.x, nextState.position.y);
 
                 this.graphics.drawCircle(nextState.position.x, nextState.position.y, 3);
-                this.graphics.lineStyle(1, ~color, alpha);
+                this.graphics.lineStyle(1, color, alpha);
                 this.graphics.lineTo(nextState.position.x + nextState.direction.x, nextState.position.y + nextState.direction.y);
                 this.graphics.lineTo(nextState.position.x + nextState.direction.x * directionSize, nextState.position.y + nextState.direction.y * directionSize);
             }
