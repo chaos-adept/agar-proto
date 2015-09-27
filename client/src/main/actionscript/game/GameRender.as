@@ -57,8 +57,6 @@ public class GameRender extends Sprite {
     }
 
     private function drawHistory(moverHistory:MoverHistory, color:Number):void {
-
-
         if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
             for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
                 var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
