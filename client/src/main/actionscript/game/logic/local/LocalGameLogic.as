@@ -19,7 +19,7 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
 
     private var moverCouner:Number;
     private var movers:Dictionary = new Dictionary();
-    private var isDelayedController:Boolean = true;
+    private var isDelayedController:Boolean = Constants.LOCAL_GAME_IS_DELAYED_CONTROLLER;
     private var movingController:BaseGameMovingController;
     private var lastTickId:Number;
 

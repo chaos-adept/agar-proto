@@ -2,6 +2,8 @@
  * Created by Julia on 27.09.2015.
  */
 package game.logic.local {
+import com.furusystems.logging.slf4as.global.error;
+
 import datavalue.Mover;
 import datavalue.MoverHistory;
 import datavalue.MoverHistoryItem;
@@ -21,8 +23,7 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
     public var parent:BaseGameMovingController;
     private var moverHistories:Dictionary = new Dictionary();
     private var maxHistory:Number = Constants.MAX_DRAW_POSITION_HISTORY;
-
-
+    private var lastParentBaseStaties:Dictionary = new Dictionary();
 
     public function ApproxProxyMovingController(parent:BaseGameMovingController) {
         this.parent = parent;
@@ -30,19 +31,35 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
     }
 
     override protected function calcNewMoverPosition(mover:Mover, timeDelta:Number):Point {
-        var history:MoverHistory = getParentHistory(mover.id);
-        if (!(history && history.historyItems.length > 1)) {
+        var parentHistory:MoverHistory = getParentHistory(mover.id);
+        if (!(parentHistory && parentHistory.historyItems.length > 1)) {
             return mover.position;
         }
 
-        var p1:MoverHistoryItem = history.historyItems[history.historyItems.length-2];
-        var p2:MoverHistoryItem = history.historyItems[history.historyItems.length-1];
-        var possibleMovingDir:Point = p2.moverCopy.position.subtract(p1.moverCopy.position);
+        var lastParentBaseState:MoverHistoryItem = lastParentBaseStaties[mover.id];
 
-        trace("possible moving dir " + possibleMovingDir , p1.moverCopy.position, p2.moverCopy.position);
+        var p1:MoverHistoryItem = parentHistory.historyItems[parentHistory.historyItems.length-2];
+        var p2:MoverHistoryItem = parentHistory.historyItems[parentHistory.historyItems.length-1];
+
+        if (!lastParentBaseState || (lastParentBaseState.tickId < p2.tickId)) {
+            lastParentBaseStaties[mover.id] = p2;
+            var errorDistance:Point = p2.moverCopy.position.subtract(mover.position);
+            if (errorDistance.length > 4) {
+                errorDistance.x *= 0.5;
+                errorDistance.y *= 0.5;
+                return mover.position.add(errorDistance);
+            }
+            return p2.moverCopy.position; //correct to parent position
+        }
+
+        var possibleMovingDir:Point = p2.moverCopy.position.subtract(p1.moverCopy.position);
+//        trace("possible moving dir " + possibleMovingDir , p1.moverCopy.position, p2.moverCopy.position);
+
         if (possibleMovingDir.length == 0) {
             return mover.position;
         }
+
+
 
         var norm:Point = new Point(possibleMovingDir.x / possibleMovingDir.length, possibleMovingDir.y / possibleMovingDir.length);
         var newPos:Point = new Point();

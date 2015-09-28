@@ -40,8 +40,8 @@ public class GameRender extends Sprite {
             return;
         }
 
-        drawHistory(moverHistory, mover.color);
-        drawHistory(mover.moverDebugInfo.approx_parent_mover_history, ~mover.color);
+        drawHistory(moverHistory, mover.color, 3, true);
+        drawHistory(mover.moverDebugInfo.approx_parent_mover_history, ~mover.color, 4, true);
 
         var drawMover:Mover = moverHistory.findAgoMilSec(Constants.RENDER_DELAY);
         if (drawMover) {
@@ -56,20 +56,31 @@ public class GameRender extends Sprite {
         }
     }
 
-    private function drawHistory(moverHistory:MoverHistory, color:Number):void {
+    private function drawHistory(moverHistory:MoverHistory, color:Number, pointSize:Number, drawLine:Boolean):void {
+        if (!moverHistory) {
+            return
+        }
+
         if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
             for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
                 var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
                 var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
                 var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
-                this.graphics.lineStyle(1, color, alpha );
-                this.graphics.moveTo(prevState.position.x, prevState.position.y);
-                this.graphics.lineTo(nextState.position.x, nextState.position.y);
+                if (drawLine) {
+                    this.graphics.lineStyle(1, color, alpha );
+                    this.graphics.moveTo(prevState.position.x, prevState.position.y);
+                    this.graphics.lineTo(nextState.position.x, nextState.position.y);
+                }
 
-                this.graphics.drawCircle(nextState.position.x, nextState.position.y, 3);
-                this.graphics.lineStyle(1, color, alpha);
-                this.graphics.lineTo(nextState.position.x + nextState.direction.x, nextState.position.y + nextState.direction.y);
-                this.graphics.lineTo(nextState.position.x + nextState.direction.x * directionSize, nextState.position.y + nextState.direction.y * directionSize);
+                this.graphics.lineStyle(1, color, alpha );
+                this.graphics.drawCircle(nextState.position.x, nextState.position.y, pointSize);
+
+                if (drawLine) {
+                    this.graphics.lineStyle(1, color, alpha/2);
+                    this.graphics.lineTo(nextState.position.x + nextState.direction.x, nextState.position.y + nextState.direction.y);
+                    this.graphics.lineTo(nextState.position.x + nextState.direction.x * directionSize, nextState.position.y + nextState.direction.y * directionSize);
+                }
+
             }
         }
     }
