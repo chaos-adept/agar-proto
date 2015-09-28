@@ -19,12 +19,11 @@ import utils.Constants;
 public class LocalGameLogicMovingController extends BaseGameMovingController {
 
     private var timer:Timer;
-    private var tickTime:Number = Constants.FRAME_DURATION_IN_MILSEC;
     private var lastTickTime:Number;
     private var tickCouner:Number;
     private var remoteMoverTicks:Dictionary = new Dictionary();
 
-    public function LocalGameLogicMovingController() {
+    public function LocalGameLogicMovingController(tickTime:Number) {
         timer = new Timer(tickTime);
         timer.addEventListener(TimerEvent.TIMER, onTickHandler);
     }

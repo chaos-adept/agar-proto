@@ -19,7 +19,7 @@ public class GameRender extends Sprite {
 
     private var movers:Dictionary = new Dictionary();
     private var moverHistories:Dictionary = new Dictionary();
-    private var directionSize:Number = 20;
+    private var directionSize:Number = 10;
 
     public function GameRender() {
         this.addEventListener(Event.ENTER_FRAME, render)
@@ -63,7 +63,7 @@ public class GameRender extends Sprite {
 
         if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
             for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
-                var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
+                var alpha:Number = 1; //0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
                 var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
                 var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
                 if (drawLine) {
@@ -86,7 +86,7 @@ public class GameRender extends Sprite {
     }
 
     public function bindView(mover:Mover):void {
-        mover.color = 0xBBBBBB + Math.random() * 0xFFFFFF;
+        mover.color = 0x111111 + Math.random() * 0xFFFFFF;
         var view:Sprite = new Sprite();
         view.graphics.beginFill(mover.color);
         view.graphics.drawCircle(0, 0, 10);

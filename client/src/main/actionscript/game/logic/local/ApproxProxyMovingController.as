@@ -22,12 +22,14 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
 
     public var parent:BaseGameMovingController;
     private var moverHistories:Dictionary = new Dictionary();
-    private var maxHistory:Number = Constants.MAX_DRAW_POSITION_HISTORY;
+    private var maxHistory:Number = Constants.MAX_REMOTE_POSITION_HISTORY;
     private var lastParentBaseStaties:Dictionary = new Dictionary();
 
-    public function ApproxProxyMovingController(parent:BaseGameMovingController) {
+    public function ApproxProxyMovingController(parent:BaseGameMovingController, tickTime:Number) {
+        super(tickTime);
         this.parent = parent;
-        this.parent.attach(this)
+        this.parent.attach(this);
+
     }
 
     override protected function calcNewMoverPosition(mover:Mover, timeDelta:Number):Point {
