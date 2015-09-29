@@ -12,19 +12,27 @@ import flash.geom.Point;
 import flash.utils.Dictionary;
 
 import game.logic.*;
+import game.logic.local.moving.ApproxProxyMovingController;
+import game.logic.local.moving.BaseGameMovingController;
+import game.logic.local.moving.DelayedProxyMovingController;
+import game.logic.local.moving.IMoverMovingListener;
+import game.logic.local.moving.LocalGameLogicMovingController;
+import game.logic.local.user.UserController;
 
 import utils.Constants;
 
-public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager {
+public class LocalGameLogic extends BaseGameLogic implements IMoverMovingListener {
 
-    private var moverCouner:Number;
-    private var movers:Dictionary = new Dictionary();
     private var isDelayedController:Boolean = Constants.LOCAL_GAME_IS_DELAYED_CONTROLLER;
     private var movingController:BaseGameMovingController;
     private var lastTickId:Number;
-
+    private var userController:UserController;
 
     public function LocalGameLogic() {
+        userController = new UserController();
+        userController.addEventListener(MoverEvent.PLAYER_LOGGED, onPlayerLoggedHandler);
+        userController.addEventListener(MoverEvent.EVENT_NEW_MOVER, onNewMoverHandler);
+
         var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController(Constants.REMOTE_TICK_TIME_MILSEC);
         movingController = !isDelayedController ? localMoverController :
                 new ApproxProxyMovingController(
@@ -37,9 +45,8 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
         movingController.attach(this);
     }
 
-    public function registerMover(mover:Mover):void {
-        movers[mover.id] = (mover);
-        dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
+    private function onNewMoverHandler(event:MoverEvent):void {
+        dispatchEvent(event)
     }
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
@@ -48,7 +55,7 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
             return;
         }
         lastTickId = e.tickId;
-        var mover:Mover = movers[e.moverId];
+        var mover:Mover = userController.getMover(e.moverId);
         mover.position = e.newPosition;
         mover.direction = e.newDirection;
 
@@ -56,25 +63,14 @@ public class LocalGameLogic extends BaseGameLogic implements IUserSessionManager
     }
 
     override public function start(playerName:String):void {
-        moverCouner = 0;
-        var player:Mover = newMover();
-        dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, player) );
-
+        userController.login(playerName);
         movingController.start();
         super.start(playerName)
     }
 
-    private function newMover():Mover {
-        var mover:Mover = new Mover();
-        mover.direction = new Point(0, 0);
-        mover.position = new Point(0, 0);
-        moverCouner++;
-        mover.id = moverCouner;
-        registerMover(mover);
-
-        return mover;
+    private function onPlayerLoggedHandler(event:MoverEvent):void {
+        dispatchEvent(event);
     }
-
 
     override public function updateDirectionRequestHandler(e:MoverDirectionUpdateEvent):void {
         if (e.isTickIdUnknown) {

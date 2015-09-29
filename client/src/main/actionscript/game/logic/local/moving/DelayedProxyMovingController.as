@@ -1,7 +1,9 @@
 /**
  * Created by Julia on 18.09.2015.
  */
-package game.logic.local {
+package game.logic.local.moving {
+import game.logic.local.*;
+
 import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 import event.MoverPositionUpdateEvent;
@@ -11,7 +13,7 @@ import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
-public class DelayedProxyMovingController extends BaseGameMovingController implements IUserSessionManager {
+public class DelayedProxyMovingController extends BaseGameMovingController implements IMoverMovingListener {
 
     private var target:BaseGameMovingController;
     private var minDelay:Number;

@@ -1,7 +1,9 @@
 /**
  * Created by Julia on 18.09.2015.
  */
-package game.logic.local {
+package game.logic.local.moving {
+import game.logic.local.*;
+
 import datavalue.Mover;
 
 import event.MoverDirectionUpdateEvent;
@@ -21,7 +23,7 @@ public class BaseGameMovingController extends EventDispatcher {
     public function BaseGameMovingController() {
     }
 
-    public function attach(sessionManager:IUserSessionManager) {
+    public function attach(sessionManager:IMoverMovingListener) {
         addEventListener(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, sessionManager.onUpdatePositionHandler);
         sessionManager.addEventListener(MoverEvent.EVENT_NEW_MOVER, newMoverHandler);
         sessionManager.addEventListener(MoverDirectionUpdateEvent.EVENT_TYPE_UPDATE_DIRECTION, requestNewMoverDirectionHandler);

@@ -1,7 +1,7 @@
 /**
  * Created by Julia on 16.09.2015.
  */
-package game.logic.local {
+package game.logic.local.moving {
 import datavalue.Mover;
 
 import event.MoverDirectionUpdateEvent;

@@ -1,7 +1,9 @@
 /**
  * Created by Julia on 27.09.2015.
  */
-package game.logic.local {
+package game.logic.local.moving {
+import game.logic.local.*;
+
 import com.furusystems.logging.slf4as.global.error;
 
 import datavalue.Mover;
@@ -18,7 +20,7 @@ import flash.utils.Dictionary;
 
 import utils.Constants;
 
-public class ApproxProxyMovingController extends LocalGameLogicMovingController implements IUserSessionManager {
+public class ApproxProxyMovingController extends LocalGameLogicMovingController implements IMoverMovingListener {
 
     public var parent:BaseGameMovingController;
     private var moverHistories:Dictionary = new Dictionary();
@@ -72,13 +74,13 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
         var moverHistory:MoverHistory = getParentHistory(e.moverId);
-        if ( !moverHistory ) {
-
-        } else {
-            if (moverHistory.last && (moverHistory.last.tickId > e.tickId)) {
-                return; //ignore missed
-            }
+        if (!moverHistory) {
+            return; // could be null if user is unregistered
         }
+        if (moverHistory.last && (moverHistory.last.tickId > e.tickId)) {
+            return; //ignore missed
+        }
+
 
         var mover:Mover = getMover(e.moverId).clone();
         mover.position = e.newPosition;
@@ -87,11 +89,16 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
     }
 
     public function getParentHistory(moverId:int):MoverHistory {
+        var mover:Mover = getMover(moverId);
+        if (!mover) {
+            return null;
+        }
+
         var moverHistory:MoverHistory = moverHistories[moverId];
         if (!moverHistory) {
             moverHistory = new MoverHistory(maxHistory);
             moverHistories[moverId] = moverHistory;
-            getMover(moverId).moverDebugInfo.approx_parent_mover_history = moverHistory;
+            mover.moverDebugInfo.approx_parent_mover_history = moverHistory;
         }
         return moverHistories[moverId]
     }
