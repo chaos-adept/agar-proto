@@ -36,7 +36,6 @@ public class LocalGameLogic extends BaseGameLogic implements IMoverMovingListene
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {
         if (lastTickId > e.tickId) {
-            trace(e.tickId);
             return;
         }
         lastTickId = e.tickId;

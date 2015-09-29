@@ -26,22 +26,24 @@ public class GameRender extends Sprite {
     }
 
     public function render(e:Event):void {
+        this.graphics.clear();
+
         for each (var mover:Mover in movers) {
             renderMover(mover);
+
+            if (Constants.ENABLE_DEBUG_DRAW) {
+                drawHistory(moverHistories[mover.id], mover.color, 10, true);
+                drawHistory(mover.moverDebugInfo.approx_parent_mover_history, ~mover.color, 10, true);
+            }
         }
     }
 
     private function renderMover(mover:Mover):void {
-        this.graphics.clear();
-
 
         var moverHistory:MoverHistory = moverHistories[mover.id];
         if (!moverHistory) {
             return;
         }
-
-        drawHistory(moverHistory, mover.color, 10, true);
-        drawHistory(mover.moverDebugInfo.approx_parent_mover_history, ~mover.color, 10, true);
 
         var drawMover:Mover = moverHistory.findAgoMilSec(Constants.RENDER_DELAY);
         if (drawMover) {
@@ -63,7 +65,7 @@ public class GameRender extends Sprite {
 
         if (Constants.ENABLE_DEBUG_DRAW && moverHistory.historyItems.length > 1) {
             for ( var indx:Number = 1; indx < moverHistory.historyItems.length-1; indx++ ) {
-                var alpha:Number = 0.5 * (indx / Constants.MAX_DRAW_POSITION_HISTORY);
+                var alpha:Number = 1 + (indx / Constants.MAX_DRAW_POSITION_HISTORY);
                 var prevState:Mover = moverHistory.historyItems[indx-1].moverCopy;
                 var nextState:Mover = moverHistory.historyItems[indx].moverCopy;
                 if (drawLine) {

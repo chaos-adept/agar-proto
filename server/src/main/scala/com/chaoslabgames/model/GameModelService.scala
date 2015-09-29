@@ -80,8 +80,10 @@ class GameModelService extends Actor with ActorLogging {
       mover.worldData.position = newPosition
     }
 
+    lastUpdateTime = currentTime
+
     sessions.foreach { case (id, mover) =>
-      val event = Session.UpdateMoverEvent(id, tickId, mover.worldData)
+      val event = Session.UpdateMoverEvent(id = id, tickId = tickId, mover.worldData)
       sessions.foreach { case (_, target) =>
         if (!target.isOffline()) {
           target.session ! event
@@ -89,7 +91,7 @@ class GameModelService extends Actor with ActorLogging {
       }
     }
 
-    lastUpdateTime = currentTime
+
   }
 
   def markSessionAsStopped(id: Long): Unit = {

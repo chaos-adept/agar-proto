@@ -5,6 +5,7 @@ package utils {
 public class Constants {
 
     public static const IS_REMOTE_SERVER:Boolean = true;
+//    public static const REMOTE_SERVER_HOST:String = "localhost";
     public static const REMOTE_SERVER_HOST:String = "176.112.192.126";
     public static const REMOTE_SERVER_PORT:int = 9999;
 

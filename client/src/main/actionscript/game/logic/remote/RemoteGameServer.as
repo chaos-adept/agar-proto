@@ -97,10 +97,11 @@ public class RemoteGameServer extends EventDispatcher {
         mover.position = pkgToPoint(pkg.moverData.position);
         mover.direction = pkgToPoint(pkg.moverData.direction);
         mover.color = pkg.moverData.color;
+        mover.id = pkg.id.toNumber();
 
         if (isUnknown) {
             log.error("unknown mover id: " + pkg.id);
-            addMover(id, mover);
+            addMover(mover);
         }
 
         dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION,
@@ -114,7 +115,8 @@ public class RemoteGameServer extends EventDispatcher {
         player.color = joinPkg.data.color;
         player.direction = pkgToPoint(joinPkg.data.direction);
         player.position = pkgToPoint(joinPkg.data.position);
-        addMover(joinPkg.id.toNumber(), player);
+        player.id = joinPkg.id.toNumber();
+        addMover(player);
 
         dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, player));
 
@@ -130,8 +132,8 @@ public class RemoteGameServer extends EventDispatcher {
         sendPacket(CMD_updateDirection, updDirPkg);
     }
 
-    private function addMover(id:Number, mover:Mover):void {
-        moverDict[id] = mover;
+    private function addMover(mover:Mover):void {
+        moverDict[mover.id] = mover;
         dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
     }
 
