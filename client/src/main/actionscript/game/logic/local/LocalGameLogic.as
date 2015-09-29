@@ -23,24 +23,17 @@ import utils.Constants;
 
 public class LocalGameLogic extends BaseGameLogic implements IMoverMovingListener {
 
-    private var isDelayedController:Boolean = Constants.LOCAL_GAME_IS_DELAYED_CONTROLLER;
     private var movingController:BaseGameMovingController;
     private var lastTickId:Number;
     private var userController:UserController;
 
-    public function LocalGameLogic() {
-        userController = new UserController();
+    public function LocalGameLogic(userController:UserController, movingController:BaseGameMovingController) {
+        this.userController = userController;
+        this.movingController = movingController;
         userController.addEventListener(MoverEvent.PLAYER_LOGGED, onPlayerLoggedHandler);
         userController.addEventListener(MoverEvent.EVENT_NEW_MOVER, onNewMoverHandler);
 
-        var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController(Constants.REMOTE_TICK_TIME_MILSEC);
-        movingController = !isDelayedController ? localMoverController :
-                new ApproxProxyMovingController(
-                        new DelayedProxyMovingController(
-                                Constants.POSITION_EVENT_PROXY_MIN_DELAY,
-                                Constants.POSITION_EVENT_PROXY_MAX_DELAY, localMoverController),
-                        Constants.LOCAL_TICK_TIME_MILSEC
-                );
+        this.movingController = movingController;
 
         movingController.attach(this);
     }
