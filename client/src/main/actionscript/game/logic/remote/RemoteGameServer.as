@@ -25,6 +25,7 @@ import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.utils.Dictionary;
@@ -34,12 +35,14 @@ import game.logic.*;
 
 import utils.Constants;
 
-public class RemoteGameLogic extends BaseGameLogic {
+public class RemoteGameServer extends EventDispatcher {
+
+    private var playerName:String;
 
     private var host:String;
     private var port:int;
     private var ags:AgsEngine;
-    public static const log:ILogger = Logging.getLogger(RemoteGameLogic);
+    public static const log:ILogger = Logging.getLogger(RemoteGameServer);
 
     public var CMD_Ping:uint = 1;
     public var CMD_login:uint = 2;
@@ -49,7 +52,7 @@ public class RemoteGameLogic extends BaseGameLogic {
 
     private var moverDict:Dictionary;
 
-    public function RemoteGameLogic(host:String, port:int) {
+    public function RemoteGameServer(host:String, port:int) {
         this.host = host;
         this.port = port;
         ags = new AgsEngine();
@@ -61,8 +64,8 @@ public class RemoteGameLogic extends BaseGameLogic {
    }
 
 
-    override public function start(playerName:String):void {
-        super.start(playerName);
+    public function login(playerName:String):void {
+        this.playerName = playerName;
 
         moverDict = new Dictionary();
 
@@ -160,11 +163,6 @@ public class RemoteGameLogic extends BaseGameLogic {
                 onUpdateMover(updMoverPkg);
                 break;
         }
-    }
-
-
-    override public function updateDirectionRequestHandler(event:MoverDirectionUpdateEvent):void {
-        super.updateDirectionRequestHandler(event);
     }
 }
 }
