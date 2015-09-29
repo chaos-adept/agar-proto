@@ -8,18 +8,10 @@ import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
 import event.MoverPositionUpdateEvent;
 
-import flash.geom.Point;
-import flash.utils.Dictionary;
-
 import game.logic.*;
-import game.logic.local.moving.ApproxProxyMovingController;
 import game.logic.local.moving.BaseGameMovingController;
-import game.logic.local.moving.DelayedProxyMovingController;
 import game.logic.local.moving.IMoverMovingListener;
-import game.logic.local.moving.LocalGameLogicMovingController;
 import game.logic.local.user.UserController;
-
-import utils.Constants;
 
 public class LocalGameLogic extends BaseGameLogic implements IMoverMovingListener {
 
