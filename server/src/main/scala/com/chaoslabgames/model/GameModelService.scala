@@ -38,7 +38,7 @@ class GameModelService extends Actor with ActorLogging {
   import context._
 
   val tickDelayMilSec = (1000f / 15f).toInt
-  val speedKoef = 1 / 2f
+  val speedKoef = 1 / 3f
   var lastUpdateTime:Long = 0L
 
   val sessions = new mutable.HashMap[Long, Mover]()
