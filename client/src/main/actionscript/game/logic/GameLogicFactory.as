@@ -27,7 +27,10 @@ public class GameLogicFactory {
         if (isRemote) {
             var remoteGameServer:RemoteGameServer = new RemoteGameServer(server, port);
             var remoteUserCtrl:UserController = new RemoteUserController(remoteGameServer);
-            var remoteMovingCtrl:BaseGameMovingController = new RemoteGameMovingController(remoteGameServer);
+            var remoteMovingCtrl:BaseGameMovingController = new ApproxProxyMovingController(
+                                                        new RemoteGameMovingController(remoteGameServer),
+                                                        Constants.FRAME_DURATION_IN_MILSEC);
+
             return new LocalGameLogic(remoteUserCtrl, remoteMovingCtrl);
         } else {
             var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController(Constants.REMOTE_TICK_TIME_MILSEC);

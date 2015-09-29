@@ -22,7 +22,6 @@ public class RemoteGameMovingController extends BaseGameMovingController {
         dispatchEvent(e);
     }
 
-
     override public function requestNewMoverDirectionHandler(e:MoverDirectionUpdateEvent):void {
         super.requestNewMoverDirectionHandler(e);
         remoteGameServer.updatePlayerDirection(e.tickId, e.newDirection);
