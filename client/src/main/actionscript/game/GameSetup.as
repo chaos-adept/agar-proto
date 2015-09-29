@@ -13,6 +13,7 @@ import flash.display.Sprite;
 import flash.events.EventDispatcher;
 
 import game.logic.BaseGameLogic;
+import game.logic.GameLogicFactory;
 
 public class GameSetup extends EventDispatcher {
 
@@ -22,9 +23,9 @@ public class GameSetup extends EventDispatcher {
     public var player:Mover;
     public var playerName:String;
     public var container:Sprite;
-    public var gameLogicFactory:Function;
+    public var gameLogicFactory:GameLogicFactory;
 
-    public function GameSetup(container:Sprite, playerName:String, gameLogicFactory:Function) {
+    public function GameSetup(container:Sprite, playerName:String, gameLogicFactory:GameLogicFactory) {
         this.container = container;
         this.playerName = playerName;
         this.gameLogicFactory = gameLogicFactory;
@@ -34,7 +35,7 @@ public class GameSetup extends EventDispatcher {
         gameRender = new GameRender();
         container.addChild(gameRender);
 
-        gameLogic = gameLogicFactory();
+        gameLogic = gameLogicFactory.create();
         gameLogic.addEventListener(MoverEvent.EVENT_NEW_MOVER, function (e:MoverEvent):void {
             gameRender.bindView(e.mover);
         });

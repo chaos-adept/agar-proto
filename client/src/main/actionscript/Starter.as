@@ -13,6 +13,7 @@ import flash.geom.Point;
 
 import game.GameSetup;
 import game.logic.BaseGameLogic;
+import game.logic.GameLogicFactory;
 import game.logic.local.LocalGameLogic;
 import game.logic.remote.RemoteGameLogic;
 
@@ -21,15 +22,10 @@ public class Starter extends Sprite {
 
     public var gameSetup:GameSetup;
 
-    public var isRemote:Boolean = false;
-    public var server:String = "176.112.192.126";
-    public var port:int = 9999;
+
 
     public function Starter() {
-
-        gameSetup = new GameSetup(this, "user " + Math.random(), function ():BaseGameLogic {
-            return isRemote ? new RemoteGameLogic(server, port) : new LocalGameLogic();
-        });
+        gameSetup = new GameSetup(this, "user " + Math.random(), new GameLogicFactory());
 
         this.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
         this.addEventListener(Event.ADDED_TO_STAGE, function (e:Event):void {
