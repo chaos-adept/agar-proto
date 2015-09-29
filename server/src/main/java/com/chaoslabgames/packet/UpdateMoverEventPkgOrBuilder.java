@@ -17,15 +17,24 @@ public interface UpdateMoverEventPkgOrBuilder extends
   long getId();
 
   /**
-   * <code>required .com.chaoslabgames.packet.MoverDataPkg moverData = 2;</code>
+   * <code>required int64 tickId = 2;</code>
+   */
+  boolean hasTickId();
+  /**
+   * <code>required int64 tickId = 2;</code>
+   */
+  long getTickId();
+
+  /**
+   * <code>required .com.chaoslabgames.packet.MoverDataPkg moverData = 3;</code>
    */
   boolean hasMoverData();
   /**
-   * <code>required .com.chaoslabgames.packet.MoverDataPkg moverData = 2;</code>
+   * <code>required .com.chaoslabgames.packet.MoverDataPkg moverData = 3;</code>
    */
   com.chaoslabgames.packet.MoverDataPkg getMoverData();
   /**
-   * <code>required .com.chaoslabgames.packet.MoverDataPkg moverData = 2;</code>
+   * <code>required .com.chaoslabgames.packet.MoverDataPkg moverData = 3;</code>
    */
   com.chaoslabgames.packet.MoverDataPkgOrBuilder getMoverDataOrBuilder();
 }

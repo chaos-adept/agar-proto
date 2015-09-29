@@ -21,7 +21,7 @@ object Session {
   case class LoginCmd(name:String)
   case object LogoutCmd
   case class JoinEvent(id:Long, name:String, moverWorldData: MoverWorldData)
-  case class UpdateMoverEvent(id:Long, moverWorldData: MoverWorldData)
+  case class UpdateMoverEvent(id:Long, tickId:Long, moverWorldData: MoverWorldData)
 }
 
 class Session(val id: Long, val connection: ActorRef, val gameModel: ActorRef) extends Actor with ActorLogging {
@@ -53,8 +53,9 @@ class Session(val id: Long, val connection: ActorRef, val gameModel: ActorRef) e
           val login = LoginPkg.parseFrom(args)
           gameModel ! GameModelService.LoginCmd(id, self, login.getName)
         case Msg.CMD_updateDirection =>
-          val updDir = UpdateDirectionCmdPkg.parseFrom(args).getDirection
-          gameModel ! GameModelService.UpdateDirectionCmd(id, self, new com.chaoslabgames.datavalue.Point(updDir.getX, updDir.getY))
+          val pkg = UpdateDirectionCmdPkg.parseFrom(args)
+          val updDir = pkg.getDirection
+          gameModel ! GameModelService.UpdateDirectionCmd(id, pkg.getTickId, self, new com.chaoslabgames.datavalue.Point(updDir.getX, updDir.getY))
       }
     case e:Session.JoinEvent =>
       val dataBuilder = JoinEventPkg.newBuilder()
@@ -66,6 +67,7 @@ class Session(val id: Long, val connection: ActorRef, val gameModel: ActorRef) e
       val builder = UpdateMoverEventPkg
         .newBuilder()
         .setId(e.id)
+        .setTickId(e.tickId)
         .setMoverData(convertToPkg(e.moverWorldData))
       connection ! TcpConnection.Send(Msg.EVENT_update_mover, builder.build().toByteArray)
     case m:Any =>

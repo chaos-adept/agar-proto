@@ -30,8 +30,8 @@ public class LocalGameLogic extends BaseGameLogic implements IMoverMovingListene
         movingController.attach(this);
     }
 
-    private function onNewMoverHandler(event:MoverEvent):void {
-        dispatchEvent(event)
+    private function onNewMoverHandler(e:MoverEvent):void {
+        dispatchEvent(e)
     }
 
     public function onUpdatePositionHandler(e:MoverPositionUpdateEvent):void {

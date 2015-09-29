@@ -22,9 +22,18 @@ package com.chaoslabgames.packet {
 		/**
 		 *  @private
 		 */
+		public static const TICKID:FieldDescriptor_TYPE_INT64 = new FieldDescriptor_TYPE_INT64("com.chaoslabgames.packet.UpdateDirectionCmdPkg.tickId", "tickId", (2 << 3) | com.netease.protobuf.WireType.VARINT);
+
+		public var tickId:Int64;
+
+		/**
+		 *  @private
+		 */
 		override used_by_generated_code final function writeToBuffer(output:com.netease.protobuf.WritingBuffer):void {
 			com.netease.protobuf.WriteUtils.writeTag(output, com.netease.protobuf.WireType.LENGTH_DELIMITED, 1);
 			com.netease.protobuf.WriteUtils.write_TYPE_MESSAGE(output, this.direction);
+			com.netease.protobuf.WriteUtils.writeTag(output, com.netease.protobuf.WireType.VARINT, 2);
+			com.netease.protobuf.WriteUtils.write_TYPE_INT64(output, this.tickId);
 			for (var fieldKey:* in this) {
 				super.writeUnknown(output, fieldKey);
 			}
@@ -35,6 +44,7 @@ package com.chaoslabgames.packet {
 		 */
 		override used_by_generated_code final function readFromSlice(input:flash.utils.IDataInput, bytesAfterSlice:uint):void {
 			var direction$count:uint = 0;
+			var tickId$count:uint = 0;
 			while (input.bytesAvailable > bytesAfterSlice) {
 				var tag:uint = com.netease.protobuf.ReadUtils.read_TYPE_UINT32(input);
 				switch (tag >> 3) {
@@ -45,6 +55,13 @@ package com.chaoslabgames.packet {
 					++direction$count;
 					this.direction = new com.chaoslabgames.packet.PointPkg();
 					com.netease.protobuf.ReadUtils.read_TYPE_MESSAGE(input, this.direction);
+					break;
+				case 2:
+					if (tickId$count != 0) {
+						throw new flash.errors.IOError('Bad data format: UpdateDirectionCmdPkg.tickId cannot be set twice.');
+					}
+					++tickId$count;
+					this.tickId = com.netease.protobuf.ReadUtils.read_TYPE_INT64(input);
 					break;
 				default:
 					super.readUnknown(input, tag);

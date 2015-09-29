@@ -17,7 +17,7 @@ object GameModelService {
 
   case class LoginCmd(id: Long, session: ActorRef, name: String)
   case class SessionStopCmd(id: Long, session: ActorRef)
-  case class UpdateDirectionCmd(id: Long, session: ActorRef, newDir: Point)
+  case class UpdateDirectionCmd(id: Long, tickId: Long, session: ActorRef, newDir: Point)
   case object WorldTick
 
   class Mover(var session: ActorRef, val name: String, var worldData: MoverWorldData) {
@@ -37,15 +37,18 @@ class GameModelService extends Actor with ActorLogging {
 
   import context._
 
-  val tickDelayMilSec = (1000f / 25f).toInt
-  val speedKoef = 2f
+  val tickDelayMilSec = (1000f / 15f).toInt
+  val speedKoef = 1 / 3f
+  var lastUpdateTime:Long = 0L
 
   val sessions = new mutable.HashMap[Long, Mover]()
+  val sessionLocalLastTickId = new mutable.HashMap[Long, Long]()
   private var scheduler: Cancellable = _
 
   @throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     scheduler = context.system.scheduler.schedule(tickDelayMilSec.millis, tickDelayMilSec.millis, self, WorldTick)
+    lastUpdateTime = System.currentTimeMillis()
     super.preStart()
   }
 
@@ -55,31 +58,38 @@ class GameModelService extends Actor with ActorLogging {
   }
 
   def registerMover(id: Long, session: ActorRef, name: String) = {
-    val mover = new Mover(session, name, new MoverWorldData(((0xFFFFFF).toDouble * Math.random()).toInt))
+    val mover = new Mover(session, name, worldData = new MoverWorldData(((0xFFFFFF).toDouble * Math.random()).toInt))
     sessions.put(id, mover)
     session ! Session.JoinEvent(id, name, mover.worldData)
   }
 
   def updateWorld() = {
+    val currentTime = System.currentTimeMillis()
+    val tickId = currentTime
+
+    val timeDelta = currentTime - lastUpdateTime
+
     sessions.foreach { case (id, mover) =>
       val direction = mover.worldData.direction
       val dirNormVec = new Vector2f(direction.x, direction.y).normalise()
       val position = mover.worldData.position
       val posVec = new Vector2f(position.x, position.y)
-      val newPosVec = posVec.add(dirNormVec.scale(speedKoef))
+      val newPosVec = posVec.add(dirNormVec.scale(speedKoef * timeDelta))
       val newPosition = new Point(newPosVec.x, newPosVec.y)
 
       mover.worldData.position = newPosition
     }
 
     sessions.foreach { case (id, mover) =>
-      val event = Session.UpdateMoverEvent(id, mover.worldData)
+      val event = Session.UpdateMoverEvent(id, tickId, mover.worldData)
       sessions.foreach { case (_, target) =>
         if (!target.isOffline()) {
           target.session ! event
         }
       }
     }
+
+    lastUpdateTime = currentTime
   }
 
   def markSessionAsStopped(id: Long): Unit = {
@@ -87,13 +97,21 @@ class GameModelService extends Actor with ActorLogging {
     mover.markAsOffline()
   }
 
+  def updateDirection(moverId: Long, tickId: Long, direction: Point): Unit = {
+    val lastTickId = sessionLocalLastTickId.getOrElse(moverId, -1l)
+    if (lastTickId < tickId) {
+      sessions.get(moverId).get.worldData.direction = direction
+      sessionLocalLastTickId.put(moverId, tickId)
+    }
+  }
+
   override def receive = {
     case LoginCmd(id, session, name) =>
       registerMover(id, session, name)
     case SessionStopCmd(id, session) =>
       markSessionAsStopped(id)
-    case UpdateDirectionCmd(id, session, dir) =>
-      sessions.get(id).get.worldData.direction = dir
+    case UpdateDirectionCmd(id, tickId, session, dir) =>
+      updateDirection(id, tickId, dir)
     case WorldTick =>
       updateWorld();
     case m: Any =>

@@ -16,24 +16,17 @@ import com.chaoslabgames.packet.UpdateDirectionCmdPkg;
 import com.chaoslabgames.packet.UpdateMoverEventPkg;
 import com.furusystems.logging.slf4as.ILogger;
 import com.furusystems.logging.slf4as.Logging;
+import com.netease.protobuf.Int64;
 import com.netease.protobuf.Message;
 
 import datavalue.Mover;
 
-import event.MoverDirectionUpdateEvent;
-
 import event.MoverEvent;
+import event.MoverPositionUpdateEvent;
 
-import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.utils.Dictionary;
-import flash.utils.Timer;
-
-import game.logic.*;
-
-import utils.Constants;
 
 public class RemoteGameServer extends EventDispatcher {
 
@@ -50,7 +43,7 @@ public class RemoteGameServer extends EventDispatcher {
     public var EVENT_JOIN:uint = 4;
     public var EVENT_update_mover:uint = 5;
 
-    private var moverDict:Dictionary;
+    private var moverDict:Dictionary; //fixme remove
 
     public function RemoteGameServer(host:String, port:int) {
         this.host = host;
@@ -93,21 +86,25 @@ public class RemoteGameServer extends EventDispatcher {
         sendPacket(CMD_login, pkg);
     }
 
-    private function onUpdateMover(updMoverPkg:UpdateMoverEventPkg):void {
-        var id:Number = updMoverPkg.id.toNumber();
+    private function onUpdateMover(pkg:UpdateMoverEventPkg):void {
+        var id:Number = pkg.id.toNumber();
+        var tickId:Number = pkg.tickId.toNumber();
+
         var mover:Mover = (moverDict[id]);
         var isUnknown:Boolean = !mover;
-
         mover = isUnknown ? new Mover() : mover;
 
-        mover.position = pkgToPoint(updMoverPkg.moverData.position);
-        mover.direction = pkgToPoint(updMoverPkg.moverData.direction);
-        mover.color = updMoverPkg.moverData.color;
+        mover.position = pkgToPoint(pkg.moverData.position);
+        mover.direction = pkgToPoint(pkg.moverData.direction);
+        mover.color = pkg.moverData.color;
 
         if (isUnknown) {
-            log.error("unknown mover id: " + updMoverPkg.id);
+            log.error("unknown mover id: " + pkg.id);
             addMover(id, mover);
         }
+
+        dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION,
+                tickId, mover.id, mover.position, mover.direction));
 
     }
 
@@ -121,15 +118,16 @@ public class RemoteGameServer extends EventDispatcher {
 
         dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, player));
 
-        var updateControllerTimer:Timer = new Timer(Constants.FRAME_DURATION_IN_MILSEC);
-        updateControllerTimer.addEventListener(TimerEvent.TIMER, function (e:Event):void {
-            var updDirPkg:UpdateDirectionCmdPkg = new UpdateDirectionCmdPkg();
-            updDirPkg.direction = new PointPkg();
-            updDirPkg.direction.x = player.direction.x;
-            updDirPkg.direction.y = player.direction.y;
-            sendPacket(CMD_updateDirection, updDirPkg);
-        });
-        updateControllerTimer.start();
+    }
+
+    public function updatePlayerDirection(tickId:Number, direction:Point):void {
+        var updDirPkg:UpdateDirectionCmdPkg = new UpdateDirectionCmdPkg();
+        updDirPkg.direction = new PointPkg();
+        updDirPkg.direction.x = direction.x;
+        updDirPkg.direction.y = direction.y;
+        updDirPkg.tickId = Int64.fromNumber(tickId);
+
+        sendPacket(CMD_updateDirection, updDirPkg);
     }
 
     private function addMover(id:Number, mover:Mover):void {

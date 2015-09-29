@@ -19,4 +19,13 @@ public interface UpdateDirectionCmdPkgOrBuilder extends
    * <code>required .com.chaoslabgames.packet.PointPkg direction = 1;</code>
    */
   com.chaoslabgames.packet.PointPkgOrBuilder getDirectionOrBuilder();
+
+  /**
+   * <code>required int64 tickId = 2;</code>
+   */
+  boolean hasTickId();
+  /**
+   * <code>required int64 tickId = 2;</code>
+   */
+  long getTickId();
 }

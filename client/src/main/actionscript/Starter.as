@@ -15,7 +15,7 @@ import game.GameSetup;
 import game.logic.BaseGameLogic;
 import game.logic.GameLogicFactory;
 import game.logic.local.LocalGameLogic;
-import game.logic.remote.RemoteGameLogic;
+import game.logic.remote.RemoteGameServer;
 
 [SWF(backgroundColor="#cccccc", frameRate="60", width="1600", height="800")]
 public class Starter extends Sprite {
@@ -43,6 +43,10 @@ public class Starter extends Sprite {
     }
 
     private function onEnterFrameHandler(event:Event):void {
+        if (!gameSetup.playerInputController) {
+            return
+        }
+
         var stageMousePosition:Point = new Point(stage.mouseX, stage.mouseY);
         gameSetup.playerInputController.updateDirectionByMouse(stageMousePosition);
     }

@@ -4,6 +4,9 @@
 package utils {
 public class Constants {
 
+    public static const IS_REMOTE_SERVER:Boolean = true;
+    public static const REMOTE_SERVER_HOST:String = "176.112.192.126";
+    public static const REMOTE_SERVER_PORT:int = 9999;
 
     public static const MAX_DRAW_POSITION_HISTORY:Number = 50;
     public static const MAX_REMOTE_POSITION_HISTORY:Number = MAX_DRAW_POSITION_HISTORY / 2;

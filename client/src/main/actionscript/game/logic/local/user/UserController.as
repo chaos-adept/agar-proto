@@ -20,18 +20,27 @@ public class UserController extends EventDispatcher {
     }
 
     public function login(playerName:String):void {
-        var player:Mover = newMover(moverCouner++);
+        doLogin(playerName, function (player:Mover):void {
+            registerMover(player);
+            onPlayerLogged(player);
+        });
+    }
+
+    protected function doLogin(playerName:String, resultHandler:Function):void {
+        var player:Mover = newBlankMover(moverCouner++);
+        resultHandler(player);
+    }
+
+    protected function onPlayerLogged(player:Mover):void {
         dispatchEvent(new MoverEvent(MoverEvent.PLAYER_LOGGED, player) );
     }
 
-    private function newMover(id:Number):Mover {
+    protected function newBlankMover(id:Number):Mover {
         var mover:Mover = new Mover();
         mover.direction = new Point(0, 0);
         mover.position = new Point(0, 0);
         mover.moverDebugInfo = new MoverDebugInfo();
         mover.id = id * -1;
-        registerMover(mover);
-
         return mover;
     }
 
@@ -39,7 +48,7 @@ public class UserController extends EventDispatcher {
         return movers[id]
     }
 
-    private function registerMover(mover:Mover):void {
+    protected function registerMover(mover:Mover):void {
         movers[mover.id] = (mover);
         dispatchEvent(new MoverEvent(MoverEvent.EVENT_NEW_MOVER, mover));
     }

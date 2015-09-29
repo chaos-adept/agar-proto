@@ -68,6 +68,11 @@ public final class UpdateDirectionCmdPkg extends
             bitField0_ |= 0x00000001;
             break;
           }
+          case 16: {
+            bitField0_ |= 0x00000002;
+            tickId_ = input.readInt64();
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -129,8 +134,24 @@ public final class UpdateDirectionCmdPkg extends
     return direction_;
   }
 
+  public static final int TICKID_FIELD_NUMBER = 2;
+  private long tickId_;
+  /**
+   * <code>required int64 tickId = 2;</code>
+   */
+  public boolean hasTickId() {
+    return ((bitField0_ & 0x00000002) == 0x00000002);
+  }
+  /**
+   * <code>required int64 tickId = 2;</code>
+   */
+  public long getTickId() {
+    return tickId_;
+  }
+
   private void initFields() {
     direction_ = com.chaoslabgames.packet.PointPkg.getDefaultInstance();
+    tickId_ = 0L;
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -139,6 +160,10 @@ public final class UpdateDirectionCmdPkg extends
     if (isInitialized == 0) return false;
 
     if (!hasDirection()) {
+      memoizedIsInitialized = 0;
+      return false;
+    }
+    if (!hasTickId()) {
       memoizedIsInitialized = 0;
       return false;
     }
@@ -156,6 +181,9 @@ public final class UpdateDirectionCmdPkg extends
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
       output.writeMessage(1, direction_);
     }
+    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      output.writeInt64(2, tickId_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -168,6 +196,10 @@ public final class UpdateDirectionCmdPkg extends
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, direction_);
+    }
+    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(2, tickId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -293,6 +325,8 @@ public final class UpdateDirectionCmdPkg extends
         directionBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
+      tickId_ = 0L;
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -329,6 +363,10 @@ public final class UpdateDirectionCmdPkg extends
       } else {
         result.direction_ = directionBuilder_.build();
       }
+      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+        to_bitField0_ |= 0x00000002;
+      }
+      result.tickId_ = tickId_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -348,12 +386,19 @@ public final class UpdateDirectionCmdPkg extends
       if (other.hasDirection()) {
         mergeDirection(other.getDirection());
       }
+      if (other.hasTickId()) {
+        setTickId(other.getTickId());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasDirection()) {
+        
+        return false;
+      }
+      if (!hasTickId()) {
         
         return false;
       }
@@ -497,6 +542,38 @@ public final class UpdateDirectionCmdPkg extends
         direction_ = null;
       }
       return directionBuilder_;
+    }
+
+    private long tickId_ ;
+    /**
+     * <code>required int64 tickId = 2;</code>
+     */
+    public boolean hasTickId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required int64 tickId = 2;</code>
+     */
+    public long getTickId() {
+      return tickId_;
+    }
+    /**
+     * <code>required int64 tickId = 2;</code>
+     */
+    public Builder setTickId(long value) {
+      bitField0_ |= 0x00000002;
+      tickId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>required int64 tickId = 2;</code>
+     */
+    public Builder clearTickId() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      tickId_ = 0L;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:com.chaoslabgames.packet.UpdateDirectionCmdPkg)

@@ -59,15 +59,15 @@ public final class Packet {
       "\n\014MoverDataPkg\0224\n\010position\030\001 \002(\0132\".com.c" +
       "haoslabgames.packet.PointPkg\0225\n\tdirectio" +
       "n\030\002 \002(\0132\".com.chaoslabgames.packet.Point" +
-      "Pkg\022\r\n\005color\030\003 \002(\005\"N\n\025UpdateDirectionCmd" +
+      "Pkg\022\r\n\005color\030\003 \002(\005\"^\n\025UpdateDirectionCmd" +
       "Pkg\0225\n\tdirection\030\001 \002(\0132\".com.chaoslabgam" +
-      "es.packet.PointPkg\"^\n\014JoinEventPkg\022\n\n\002id",
-      "\030\001 \002(\003\022\014\n\004name\030\002 \002(\t\0224\n\004data\030\003 \002(\0132&.com" +
-      ".chaoslabgames.packet.MoverDataPkg\"\\\n\023Up" +
-      "dateMoverEventPkg\022\n\n\002id\030\001 \002(\003\0229\n\tmoverDa" +
-      "ta\030\002 \002(\0132&.com.chaoslabgames.packet.Move" +
-      "rDataPkgB$\n\030com.chaoslabgames.packetB\006Pa" +
-      "cketP\001"
+      "es.packet.PointPkg\022\016\n\006tickId\030\002 \002(\003\"^\n\014Jo",
+      "inEventPkg\022\n\n\002id\030\001 \002(\003\022\014\n\004name\030\002 \002(\t\0224\n\004" +
+      "data\030\003 \002(\0132&.com.chaoslabgames.packet.Mo" +
+      "verDataPkg\"l\n\023UpdateMoverEventPkg\022\n\n\002id\030" +
+      "\001 \002(\003\022\016\n\006tickId\030\002 \002(\003\0229\n\tmoverData\030\003 \002(\013" +
+      "2&.com.chaoslabgames.packet.MoverDataPkg" +
+      "B$\n\030com.chaoslabgames.packetB\006PacketP\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -110,7 +110,7 @@ public final class Packet {
     internal_static_com_chaoslabgames_packet_UpdateDirectionCmdPkg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_chaoslabgames_packet_UpdateDirectionCmdPkg_descriptor,
-        new java.lang.String[] { "Direction", });
+        new java.lang.String[] { "Direction", "TickId", });
     internal_static_com_chaoslabgames_packet_JoinEventPkg_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_com_chaoslabgames_packet_JoinEventPkg_fieldAccessorTable = new
@@ -122,7 +122,7 @@ public final class Packet {
     internal_static_com_chaoslabgames_packet_UpdateMoverEventPkg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_chaoslabgames_packet_UpdateMoverEventPkg_descriptor,
-        new java.lang.String[] { "Id", "MoverData", });
+        new java.lang.String[] { "Id", "TickId", "MoverData", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

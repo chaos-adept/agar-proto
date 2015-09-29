@@ -22,7 +22,14 @@ package com.chaoslabgames.packet {
 		/**
 		 *  @private
 		 */
-		public static const MOVERDATA:FieldDescriptor_TYPE_MESSAGE = new FieldDescriptor_TYPE_MESSAGE("com.chaoslabgames.packet.UpdateMoverEventPkg.moverData", "moverData", (2 << 3) | com.netease.protobuf.WireType.LENGTH_DELIMITED, function():Class { return com.chaoslabgames.packet.MoverDataPkg; });
+		public static const TICKID:FieldDescriptor_TYPE_INT64 = new FieldDescriptor_TYPE_INT64("com.chaoslabgames.packet.UpdateMoverEventPkg.tickId", "tickId", (2 << 3) | com.netease.protobuf.WireType.VARINT);
+
+		public var tickId:Int64;
+
+		/**
+		 *  @private
+		 */
+		public static const MOVERDATA:FieldDescriptor_TYPE_MESSAGE = new FieldDescriptor_TYPE_MESSAGE("com.chaoslabgames.packet.UpdateMoverEventPkg.moverData", "moverData", (3 << 3) | com.netease.protobuf.WireType.LENGTH_DELIMITED, function():Class { return com.chaoslabgames.packet.MoverDataPkg; });
 
 		public var moverData:com.chaoslabgames.packet.MoverDataPkg;
 
@@ -32,7 +39,9 @@ package com.chaoslabgames.packet {
 		override used_by_generated_code final function writeToBuffer(output:com.netease.protobuf.WritingBuffer):void {
 			com.netease.protobuf.WriteUtils.writeTag(output, com.netease.protobuf.WireType.VARINT, 1);
 			com.netease.protobuf.WriteUtils.write_TYPE_INT64(output, this.id);
-			com.netease.protobuf.WriteUtils.writeTag(output, com.netease.protobuf.WireType.LENGTH_DELIMITED, 2);
+			com.netease.protobuf.WriteUtils.writeTag(output, com.netease.protobuf.WireType.VARINT, 2);
+			com.netease.protobuf.WriteUtils.write_TYPE_INT64(output, this.tickId);
+			com.netease.protobuf.WriteUtils.writeTag(output, com.netease.protobuf.WireType.LENGTH_DELIMITED, 3);
 			com.netease.protobuf.WriteUtils.write_TYPE_MESSAGE(output, this.moverData);
 			for (var fieldKey:* in this) {
 				super.writeUnknown(output, fieldKey);
@@ -44,6 +53,7 @@ package com.chaoslabgames.packet {
 		 */
 		override used_by_generated_code final function readFromSlice(input:flash.utils.IDataInput, bytesAfterSlice:uint):void {
 			var id$count:uint = 0;
+			var tickId$count:uint = 0;
 			var moverData$count:uint = 0;
 			while (input.bytesAvailable > bytesAfterSlice) {
 				var tag:uint = com.netease.protobuf.ReadUtils.read_TYPE_UINT32(input);
@@ -56,6 +66,13 @@ package com.chaoslabgames.packet {
 					this.id = com.netease.protobuf.ReadUtils.read_TYPE_INT64(input);
 					break;
 				case 2:
+					if (tickId$count != 0) {
+						throw new flash.errors.IOError('Bad data format: UpdateMoverEventPkg.tickId cannot be set twice.');
+					}
+					++tickId$count;
+					this.tickId = com.netease.protobuf.ReadUtils.read_TYPE_INT64(input);
+					break;
+				case 3:
 					if (moverData$count != 0) {
 						throw new flash.errors.IOError('Bad data format: UpdateMoverEventPkg.moverData cannot be set twice.');
 					}

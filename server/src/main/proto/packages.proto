@@ -35,6 +35,7 @@ message MoverDataPkg
 message UpdateDirectionCmdPkg
 {
     required PointPkg direction = 1;
+    required int64 tickId = 2;
 }
 
 message JoinEventPkg
@@ -47,5 +48,6 @@ message JoinEventPkg
 message UpdateMoverEventPkg
 {
     required int64 id = 1;
-    required MoverDataPkg moverData = 2;
+    required int64 tickId = 2;
+    required MoverDataPkg moverData = 3;
 }
