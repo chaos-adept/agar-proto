@@ -3,33 +3,27 @@
  */
 package datavalue {
 public class MoverHistory {
-    public var historyItems:Array = [];
 
-    public var maxSize:Number;
+    private var dataContainer:FifoLimitedArray;
+
+    public function get historyItems():Array {
+        return dataContainer.items;
+    }
 
     public function MoverHistory(maxSize:Number) {
-        this.maxSize = maxSize;
+        dataContainer = new FifoLimitedArray(maxSize)
     }
 
     public function get last():MoverHistoryItem {
-        if (historyItems.length == 0) {
-            return null;
-        } else {
-            return historyItems[historyItems.length-1]
-        }
-
+        return dataContainer.last
     }
 
     public function add(m:Mover, tickId:Number):void {
-        if (historyItems.length == maxSize) {
-            historyItems.shift();
-        }
-
         var item:MoverHistoryItem = new MoverHistoryItem();
         item.moverCopy = m.clone();
         item.time = new Date().time;
         item.tickId = tickId;
-        historyItems.push(item);
+        dataContainer.push(item);
     }
 
     public function findAgoMilSec(milSec:int):Mover {
@@ -41,12 +35,6 @@ public class MoverHistory {
         }
 
         return null;
-    }
-
-    public function clone():MoverHistory {
-        var mh:MoverHistory = new MoverHistory(maxSize);
-        mh.historyItems = new Array().concat(mh.historyItems)
-        return mh;
     }
 }
 }
