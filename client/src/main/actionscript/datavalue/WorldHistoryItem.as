@@ -8,8 +8,12 @@ public class WorldHistoryItem {
 
     public var movers:Dictionary;
     public var remoteTicks:Dictionary;
+    public var tickId:Number;
+    public var deltaTime:Number;
 
-    public function WorldHistoryItem(targetMovers:Dictionary, targetRemoteTicks:Dictionary) {
+    public function WorldHistoryItem(tickId:Number, deltaTime:Number, targetMovers:Dictionary, targetRemoteTicks:Dictionary) {
+        this.tickId = tickId;
+        this.deltaTime = deltaTime;
         this.movers = new Dictionary();
         this.remoteTicks = new Dictionary();
         assignMovers(targetMovers);

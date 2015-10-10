@@ -18,16 +18,16 @@ import flash.utils.Timer;
 
 import utils.Constants;
 
-public class LocalGameLogicMovingController extends BaseGameMovingController {
+public class BasicGameLogicMovingController extends BaseGameMovingController {
 
     private var timer:Timer;
     private var lastTickTime:Number;
-    private var tickCouner:Number;
-    private var remoteMoverTicks:Dictionary = new Dictionary();
-    private var worldHistories:FifoArray = new FifoArray(Constants.MAX_REMOTE_POSITION_HISTORY);
+    protected var tickCouner:Number;
+    protected var remoteMoverTicks:Dictionary = new Dictionary();
+    protected var worldHistories:FifoArray = new FifoArray(Constants.MAX_REMOTE_POSITION_HISTORY);
 
 
-    public function LocalGameLogicMovingController(tickTime:Number) {
+    public function BasicGameLogicMovingController(tickTime:Number) {
         timer = new Timer(tickTime);
         timer.addEventListener(TimerEvent.TIMER, onTickHandler);
     }
@@ -43,7 +43,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
         updateMoverPositions(tickId, timeDelta);
 
         //make world copy
-        var worldHistoryItem = new WorldHistoryItem(this.movers, this.remoteMoverTicks);
+        var worldHistoryItem = new WorldHistoryItem(tickId, timeDelta, this.movers, this.remoteMoverTicks);
         worldHistories.push(worldHistoryItem);
 
 
@@ -58,7 +58,7 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
 
     }
 
-    private function updateMoverPositions(tickId:Number, timeDelta:Number):void {
+    public function updateMoverPositions(tickId:Number, timeDelta:Number):void {
         for each (var mover:Mover in movers) {
             //reCalcMoverPosition
             var newPos:Point = calcNewMoverPosition(mover, timeDelta);
@@ -71,11 +71,14 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     }
 
     protected function calcNewMoverPosition(mover:Mover, timeDelta:Number):Point {
-        var direction:Point = mover.direction;
+        return newLinearPosition(mover.direction, mover.position, timeDelta);
+    }
+
+    protected function newLinearPosition(direction:Point, position:Point, timeDelta:Number):Point {
         var newPos:Point =  new Point();
         var timeMultVal =  timeDelta;
-        newPos.x = mover.position.x + direction.x * Constants.SPEED_KOEF * timeMultVal;
-        newPos.y = mover.position.y + direction.y * Constants.SPEED_KOEF * timeMultVal;
+        newPos.x = position.x + direction.x * Constants.SPEED_KOEF * timeMultVal;
+        newPos.y = position.y + direction.y * Constants.SPEED_KOEF * timeMultVal;
         return newPos;
     }
 

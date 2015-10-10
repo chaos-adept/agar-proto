@@ -19,13 +19,21 @@ public class FifoArray {
         items.push(item)
     }
 
-    public function get last():MoverHistoryItem {
+    public function get last():* {
         if (items.length == 0) {
             return null;
         } else {
             return items[items.length-1]
         }
 
+    }
+
+    public function get length():Number {
+        return Math.min(items.length, maxSize);
+    }
+
+    public function getAgo(prevNum:Number):WorldHistoryItem {
+        return items[items.length - prevNum - 1];
     }
 }
 }

@@ -6,7 +6,8 @@ import game.logic.local.LocalGameLogic;
 import game.logic.local.moving.ApproxProxyMovingController;
 import game.logic.local.moving.BaseGameMovingController;
 import game.logic.local.moving.DelayedProxyMovingController;
-import game.logic.local.moving.LocalGameLogicMovingController;
+import game.logic.local.moving.BasicGameLogicMovingController;
+import game.logic.local.moving.FakeRemoteMovingController;
 import game.logic.local.user.UserController;
 import game.logic.remote.RemoteGameMovingController;
 import game.logic.remote.RemoteGameServer;
@@ -33,7 +34,7 @@ public class GameLogicFactory {
 
             return new LocalGameLogic(remoteUserCtrl, remoteMovingCtrl);
         } else {
-            var localMoverController:BaseGameMovingController = new LocalGameLogicMovingController(Constants.REMOTE_TICK_TIME_MILSEC);
+            var localMoverController:BaseGameMovingController = new FakeRemoteMovingController(Constants.REMOTE_TICK_TIME_MILSEC);
             var movingController:BaseGameMovingController = !Constants.LOCAL_GAME_IS_DELAYED_CONTROLLER ? localMoverController :
                     new ApproxProxyMovingController(
                             new DelayedProxyMovingController(

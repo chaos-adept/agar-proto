@@ -14,7 +14,7 @@ public class Constants {
     public static const RENDER_DELAY:Number = 50;
     public static const TARGET_FRAMES_PER_SEC:Number = 60;
     public static const FRAME_DURATION_IN_MILSEC:Number = 1000 / TARGET_FRAMES_PER_SEC;
-    public static const POSITION_EVENT_PROXY_MIN_DELAY:Number = 80;
+    public static const POSITION_EVENT_PROXY_MIN_DELAY:Number = 60;
     public static const POSITION_EVENT_PROXY_MAX_DELAY:Number = 150;
     public static const ENABLE_SPEED_BASED_ON_CYCLE_TIME:Boolean = true;
     public static const ENABLE_DEBUG_DRAW:Boolean = true;
@@ -23,7 +23,7 @@ public class Constants {
     public static const LOCAL_GAME_IS_DELAYED_CONTROLLER:Boolean = true;
 
     public static const LOCAL_TICK_TIME_MILSEC:Number = FRAME_DURATION_IN_MILSEC;
-    public static const REMOTE_TICK_TIME_MILSEC:Number = LOCAL_TICK_TIME_MILSEC * 3;
+    public static const REMOTE_TICK_TIME_MILSEC:Number = LOCAL_TICK_TIME_MILSEC * 0.8;
 
     public function Constants() {
     }

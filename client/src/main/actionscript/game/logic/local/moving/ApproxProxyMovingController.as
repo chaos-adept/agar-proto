@@ -20,7 +20,7 @@ import flash.utils.Dictionary;
 
 import utils.Constants;
 
-public class ApproxProxyMovingController extends LocalGameLogicMovingController implements IMoverMovingListener {
+public class ApproxProxyMovingController extends BasicGameLogicMovingController implements IMoverMovingListener {
 
     public var parent:BaseGameMovingController;
     private var moverHistories:Dictionary = new Dictionary();
