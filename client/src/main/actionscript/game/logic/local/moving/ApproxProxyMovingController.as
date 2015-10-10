@@ -51,12 +51,12 @@ public class ApproxProxyMovingController extends LocalGameLogicMovingController 
             if (errorDistance.length > 4) {
                 errorDistance.x *= 0.5;
                 errorDistance.y *= 0.5;
-                return mover.position.add(errorDistance);
+                //return mover.position.add(errorDistance);
             }
-            return p2.moverCopy.position; //correct to parent position
+            //return p2.moverCopy.position; //correct to parent position
         }
 
-        var possibleMovingDir:Point = p2.moverCopy.position.subtract(p1.moverCopy.position);
+        var possibleMovingDir:Point = mover.direction;//p2.moverCopy.position.subtract(p1.moverCopy.position);
 //        trace("possible moving dir " + possibleMovingDir , p1.moverCopy.position, p2.moverCopy.position);
 
         if (possibleMovingDir.length == 0) {

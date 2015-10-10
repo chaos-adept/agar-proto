@@ -4,14 +4,14 @@
 package datavalue {
 public class MoverHistory {
 
-    private var dataContainer:FifoLimitedArray;
+    private var dataContainer:FifoArray;
 
     public function get historyItems():Array {
         return dataContainer.items;
     }
 
     public function MoverHistory(maxSize:Number) {
-        dataContainer = new FifoLimitedArray(maxSize)
+        dataContainer = new FifoArray(maxSize)
     }
 
     public function get last():MoverHistoryItem {

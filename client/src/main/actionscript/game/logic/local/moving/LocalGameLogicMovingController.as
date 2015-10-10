@@ -2,7 +2,9 @@
  * Created by Julia on 16.09.2015.
  */
 package game.logic.local.moving {
+import datavalue.FifoArray;
 import datavalue.Mover;
+import datavalue.WorldHistoryItem;
 
 import event.MoverDirectionUpdateEvent;
 import event.MoverEvent;
@@ -22,6 +24,8 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     private var lastTickTime:Number;
     private var tickCouner:Number;
     private var remoteMoverTicks:Dictionary = new Dictionary();
+    private var worldHistories:FifoArray = new FifoArray(Constants.MAX_REMOTE_POSITION_HISTORY);
+
 
     public function LocalGameLogicMovingController(tickTime:Number) {
         timer = new Timer(tickTime);
@@ -31,17 +35,35 @@ public class LocalGameLogicMovingController extends BaseGameMovingController {
     public function onTickHandler(e:TimerEvent):void {
         var time:Number = new Date().time;
         var timeDelta:Number = time - lastTickTime;
+        timeDelta = getCorrectedTimeDelta(timeDelta);
+
         var tickId:Number = tickCouner++;
 
+        //update positions
+        updateMoverPositions(tickId, timeDelta);
+
+        //make world copy
+        var worldHistoryItem = new WorldHistoryItem(this.movers, this.remoteMoverTicks);
+        worldHistories.push(worldHistoryItem);
+
+
+        //send update
         for each (var mover:Mover in movers) {
-            //reCalcMoverPosition
-            trace(this + ": " + mover.position + " " + mover.direction );
-            var newPos:Point = calcNewMoverPosition(mover, getCorrectedTimeDelta(timeDelta));
-            dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION, tickId, mover.id, newPos, mover.direction));
-            mover.position = newPos;
+            dispatchEvent(new MoverPositionUpdateEvent(MoverPositionUpdateEvent.EVENT_TYPE_UPDATE_POSITION,
+                    tickId, mover.id, mover.position, mover.direction));
         }
 
         lastTickTime += timeDelta;
+
+
+    }
+
+    private function updateMoverPositions(tickId:Number, timeDelta:Number):void {
+        for each (var mover:Mover in movers) {
+            //reCalcMoverPosition
+            var newPos:Point = calcNewMoverPosition(mover, timeDelta);
+            mover.position = newPos;
+        }
     }
 
     protected function getCorrectedTimeDelta(timeDelta:Number):Number {
